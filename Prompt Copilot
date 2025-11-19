@@ -1,0 +1,25 @@
+**GOAL:** Create a complete, single-file HTML webpage about [INPUT TOPIC] that can be opened locally in any browser without external dependencies.
+
+**CONTEXT:** I need a visually stunning, professional webpage with modern 2025 design trends including smooth animations, responsive layout, dark mode support, gradient backgrounds, and micro-interactions. The page should tell a compelling story through visual hierarchy and engaging design.
+
+**EXPECTATIONS:**
+- Generate a SINGLE complete HTML file with embedded CSS and JavaScript (no external files)
+- Include modern design elements: bold typography, vibrant gradients, smooth scroll animations, parallax effects, and micro-animations
+- Make it fully responsive (mobile, tablet, desktop)
+- Use CSS Grid and Flexbox for layout
+- Add smooth transitions and hover effects
+- Include a navigation menu, hero section, content sections, and footer
+- Use a cohesive color palette with dark mode aesthetics
+- Ensure the file is ready to save as .html and open directly in a browser
+- Code should be clean, commented, and easy to customize
+
+**SOURCE/CONTENT:**
+Topic: [INPUT TOPIC]
+Content to include: [CONTENT]
+- Main headline: [your headline]
+- Key sections: [section 1, section 2, section 3...]
+- Call-to-action: [your CTA]
+- Color preference: [your colors or leave blank for automatic]
+
+**OUTPUT FORMAT:**
+Provide the complete HTML code in a code block that I can copy-paste directly into a .html file and open locally. Include inline CSS and JavaScript within the HTML file for portability.
