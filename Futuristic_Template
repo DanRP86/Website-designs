@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Agentic Future | Strategic Roadmap</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-purple: #a855f7;
+            --neon-blue: #3b82f6;
+            --bg-dark: #0f172a;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); color: white; overflow-x: hidden; }
+        h1, h2, h3, .display-font { font-family: 'Space Grotesk', sans-serif; }
+        
+        /* Animations */
+        .gradient-text {
+            background: linear-gradient(to right, #60a5fa, #c084fc, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: gradientMove 4s linear infinite;
+        }
+        @keyframes gradientMove { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+
+        .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card-hover:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(168, 85, 247, 0.15), 0 8px 10px -6px rgba(168, 85, 247, 0.1); border-color: rgba(168, 85, 247, 0.5); }
+
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Typewriter Cursor */
+        .typing-cursor::after { content: '|'; animation: blink 1s step-start infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* Modal Animation */
+        .modal-enter { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(50px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    </style>
+</head>
+<body class="antialiased selection:bg-purple-500 selection:text-white">
+
+    <nav class="fixed w-full z-50 top-0 left-0 glass-panel border-b-0">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-3 h-3 rounded-full bg-purple-500 animate-pulse"></div>
+                <span class="font-bold tracking-widest text-sm uppercase">Future Ops</span>
+            </div>
+            <div class="hidden md:flex gap-8 text-sm font-medium text-slate-400">
+                <span>Global Deployment</span>
+                <span>Est. ROI: +40% Efficiency</span>
+            </div>
+            <button class="px-5 py-2 rounded-full bg-white text-slate-900 font-bold text-sm hover:bg-purple-50 transition-colors">
+                Start Transformation
+            </button>
+        </div>
+    </nav>
+
+    <section class="relative min-h-screen flex items-center justify-center pt-20">
+        <div class="absolute top-20 left-1/4 w-96 h-96 bg-purple-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-20 animate-blob"></div>
+        <div class="absolute bottom-20 right-1/4 w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-20 animate-blob animation-delay-2000"></div>
+
+        <div class="max-w-5xl mx-auto px-6 text-center z-10">
+            <div class="inline-block mb-4 px-4 py-1 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-xs font-bold tracking-wide uppercase">
+                Strategic Initiative 2025
+            </div>
+            <h1 class="text-6xl md:text-8xl font-bold leading-tight mb-6">
+                Build the <br>
+                <span class="gradient-text">Autonomous Enterprise</span>
+            </h1>
+            <p class="text-xl text-slate-400 max-w-2xl mx-auto mb-10 font-light">
+                We are moving from "People using Software" to "Software acting on our behalf."
+                <br>This roadmap bridges the gap between Leadership Vision and Technical Execution.
+            </p>
+            
+            <div class="max-w-2xl mx-auto glass-panel rounded-xl p-4 text-left font-mono text-sm shadow-2xl border-t border-white/20">
+                <div class="flex gap-2 mb-4">
+                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                </div>
+                <div class="text-green-400 space-y-1" id="terminal-output">
+                    </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 relative z-10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between items-end mb-12">
+                <div>
+                    <h2 class="text-4xl font-bold mb-2">The Capability Map</h2>
+                    <p class="text-slate-400">Select a module to view the Strategic Unlock.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 h-auto md:h-[600px]">
+                
+                <div onclick="openModal(0)" class="md:col-span-2 bg-slate-900/50 border border-slate-800 rounded-3xl p-8 card-hover cursor-pointer relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 p-4 opacity-20 group-hover:opacity-50 transition-opacity">
+                        <i class="fa-solid fa-brain text-9xl text-white"></i>
+                    </div>
+                    <div class="relative z-10 h-full flex flex-col justify-between">
+                        <div>
+                            <span class="text-blue-400 font-mono text-xs uppercase tracking-widest">Phase 1 • Weeks 1-4</span>
+                            <h3 class="text-3xl font-bold mt-2 group-hover:text-blue-400 transition-colors">Cognitive Architecture</h3>
+                            <p class="text-slate-400 mt-4 max-w-md">Understand the reasoning engine. How to stop AI from hallucinating financial data and force it to follow corporate logic.</p>
+                        </div>
+                        <div class="flex items-center gap-2 text-sm font-bold text-white mt-8">
+                            Unlock: Zero-Error Reporting
+                            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div onclick="openModal(1)" class="md:row-span-2 bg-slate-900/50 border border-slate-800 rounded-3xl p-8 card-hover cursor-pointer relative overflow-hidden group">
+                    <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-purple-600/30 rounded-full blur-3xl group-hover:bg-purple-600/50 transition-colors"></div>
+                    <div class="relative z-10 h-full flex flex-col">
+                        <span class="text-purple-400 font-mono text-xs uppercase tracking-widest">Phase 2 • Weeks 5-10</span>
+                        <h3 class="text-3xl font-bold mt-2 group-hover:text-purple-400 transition-colors">Infrastructure & Data</h3>
+                        <p class="text-slate-400 mt-4 mb-8">Connecting the brain to the body. Using APIs and Python to let AI read our Intranet, SharePoint, and CRMs securely.</p>
+                        
+                        <div class="mt-auto space-y-3">
+                            <div class="bg-slate-800/50 p-3 rounded-lg text-xs text-slate-300 flex items-center gap-3 border border-slate-700">
+                                <i class="fa-solid fa-lock text-green-400"></i> Secure Local Execution
+                            </div>
+                            <div class="bg-slate-800/50 p-3 rounded-lg text-xs text-slate-300 flex items-center gap-3 border border-slate-700">
+                                <i class="fa-solid fa-database text-blue-400"></i> RAG Implementation
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div onclick="openModal(2)" class="bg-slate-900/50 border border-slate-800 rounded-3xl p-8 card-hover cursor-pointer relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 p-4 opacity-20 group-hover:opacity-50 transition-opacity">
+                        <i class="fa-solid fa-users-gear text-8xl text-white"></i>
+                    </div>
+                    <div class="relative z-10">
+                        <span class="text-emerald-400 font-mono text-xs uppercase tracking-widest">Phase 3 • Weeks 11-16</span>
+                        <h3 class="text-2xl font-bold mt-2 group-hover:text-emerald-400 transition-colors">Agentic Crews</h3>
+                        <p class="text-slate-400 mt-4 text-sm">Building autonomous teams. One agent researches, one drafts, one approves.</p>
+                    </div>
+                </div>
+
+                <div onclick="openModal(3)" class="bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 rounded-3xl p-8 card-hover cursor-pointer relative overflow-hidden group">
+                    <div class="relative z-10 flex flex-col h-full justify-center text-center">
+                        <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto mb-4 text-black text-xl shadow-lg group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-play"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">Global Deployment</h3>
+                        <p class="text-slate-400 text-xs mt-2">Governance, Cost Control & Scale</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-12 text-center text-slate-600 text-sm">
+        <p>Designed for Executive Leadership</p>
+    </footer>
+
+    <div id="modal-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div id="modal-content" class="bg-slate-900 border border-slate-700 w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden transform translate-y-10 transition-transform duration-300">
+            <div class="flex flex-col md:flex-row h-[600px]">
+                
+                <div class="w-full md:w-1/3 bg-slate-800/50 p-8 flex flex-col border-r border-slate-700">
+                    <div id="m-icon" class="w-12 h-12 rounded-lg bg-slate-700 flex items-center justify-center text-2xl mb-6 text-white"></div>
+                    <h3 id="m-title" class="text-2xl font-bold mb-2 display-font"></h3>
+                    <span id="m-phase" class="text-xs font-mono text-purple-400 uppercase mb-6"></span>
+                    
+                    <div class="mt-auto">
+                        <p class="text-xs font-bold text-slate-400 uppercase mb-2">Director's ROI</p>
+                        <p id="m-roi" class="text-sm text-white leading-relaxed"></p>
+                    </div>
+                </div>
+
+                <div class="w-full md:w-2/3 p-8 overflow-y-auto">
+                    <div class="flex justify-between items-center mb-6">
+                        <h4 class="text-lg font-bold text-slate-200">The Executive Curriculum</h4>
+                        <button onclick="closeModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-times text-xl"></i></button>
+                    </div>
+                    <p id="m-desc" class="text-slate-400 mb-8"></p>
+
+                    <div class="space-y-6">
+                        <div>
+                            <h5 class="text-sm font-bold text-blue-400 mb-3 uppercase tracking-wide">What you will build</h5>
+                            <div id="m-outcome" class="p-4 bg-blue-900/20 border border-blue-500/30 rounded-lg text-blue-100 text-sm"></div>
+                        </div>
+
+                        <div>
+                            <h5 class="text-sm font-bold text-slate-500 mb-3 uppercase tracking-wide">Key Concepts</h5>
+                            <ul id="m-topics" class="space-y-3 text-sm text-slate-300"></ul>
+                        </div>
+
+                        <div>
+                             <h5 class="text-sm font-bold text-slate-500 mb-3 uppercase tracking-wide">Tech Stack</h5>
+                             <div id="m-tools" class="flex flex-wrap gap-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Terminal Effect
+        const terminalText = [
+            "> Initializing Agentic Protocols...",
+            "> Connecting to Enterprise Data Layer...",
+            "> Optimization detected: +40% Efficiency",
+            "> System Ready. Awaiting Command."
+        ];
+        
+        const terminalOutput = document.getElementById('terminal-output');
+        let lineIndex = 0;
+        let charIndex = 0;
+
+        function typeWriter() {
+            if (lineIndex < terminalText.length) {
+                if (charIndex === 0) {
+                    const div = document.createElement('div');
+                    div.className = lineIndex === terminalText.length - 1 ? "typing-cursor text-white font-bold" : "";
+                    div.id = `line-${lineIndex}`;
+                    terminalOutput.appendChild(div);
+                }
+                
+                const currentLine = document.getElementById(`line-${lineIndex}`);
+                currentLine.textContent += terminalText[lineIndex].charAt(charIndex);
+                charIndex++;
+
+                if (charIndex < terminalText[lineIndex].length) {
+                    setTimeout(typeWriter, 30);
+                } else {
+                    if (lineIndex < terminalText.length - 1) {
+                        document.querySelector('.typing-cursor')?.classList.remove('typing-cursor'); // Remove cursor from prev line
+                        lineIndex++;
+                        charIndex = 0;
+                        setTimeout(typeWriter, 400);
+                    }
+                }
+            }
+        }
+        
+        setTimeout(typeWriter, 1000);
+
+        // Data
+        const modules = [
+            {
+                title: "Cognitive Architecture",
+                phase: "Phase 1: Foundation",
+                icon: "fa-brain",
+                iconColor: "bg-blue-600",
+                desc: "Before we automate, we must understand the engine. This phase demystifies LLMs, moving from 'Magic' to 'Math'.",
+                roi: "Risk Mitigation. You will understand exactly why models hallucinate and how to implement 'Guardrails' that prevent your brand from generating incorrect data.",
+                outcome: "Build a 'Strategy Audit' bot that takes raw Excel data and writes a board-ready summary in your specific tone of voice, with 0% hallucination.",
+                topics: ["Prompt Engineering vs Prompt Tuning", "Chain-of-Thought Reasoning (CoT)", "Context Windows & Token Economics"],
+                tools: ["ChatGPT Enterprise", "Claude 3 Opus", "Playground"]
+            },
+            {
+                title: "Infrastructure & Data",
+                phase: "Phase 2: The Bridge",
+                icon: "fa-network-wired",
+                iconColor: "bg-purple-600",
+                desc: "The transition from Chatbot to Software. Learning the basics of Python and APIs to glue AI to your internal systems.",
+                roi: "Security & Independence. You will stop relying on public tools. You will learn to run 'Local Agents' that process confidential PDFs on your laptop without sending data to the cloud.",
+                outcome: "Create a secure pipeline that watches your email inbox, extracts invoices, reads them with AI, and updates a local CSV file automatically.",
+                topics: ["JSON Data Structures", "Rest APIs & Webhooks", "Python Basics for Automation"],
+                tools: ["VS Code", "Python 3.10", "Postman"]
+            },
+            {
+                title: "Agentic Crews",
+                phase: "Phase 3: Autonomy",
+                icon: "fa-users-gear",
+                iconColor: "bg-emerald-600",
+                desc: "The final frontier. creating multiple agents with distinct roles (Researcher, Writer, Reviewer) that collaborate.",
+                roi: "Scale. A single human manages 10 agents. This is how you 10x the output of your department without increasing headcount.",
+                outcome: "Deploy a 'Market Watch Crew': Agent A scrapes news, Agent B analyzes sentiment, Agent C drafts a report, Agent D (Manager) critiques it.",
+                topics: ["ReAct (Reasoning + Acting)", "Multi-Agent Orchestration", "Human-in-the-loop Governance"],
+                tools: ["CrewAI", "LangGraph", "Microsoft AutoGen"]
+            },
+            {
+                title: "Global Deployment",
+                phase: "Phase 4: Enterprise Scale",
+                icon: "fa-globe",
+                iconColor: "bg-indigo-600",
+                desc: "Taking your pilots to production. Governance, cost monitoring, and integration with IT security policies.",
+                roi: "Sustainability. ensuring your AI strategy doesn't bankrupt the budget. Optimizing between 'Smart' (Expensive) models and 'Fast' (Cheap) models.",
+                outcome: "A full governance dashboard showing agent activity, cost per token, and success rates across the department.",
+                topics: ["Cost Optimization (Model Routing)", "Evaluation Frameworks (LLM-as-a-Judge)", "Enterprise Security Deployment"],
+                tools: ["LangSmith", "Azure OpenAI", "Docker"]
+            }
+        ];
+
+        // Modal Logic
+        const modalOverlay = document.getElementById('modal-overlay');
+        const modalContent = document.getElementById('modal-content');
+
+        function openModal(index) {
+            const data = modules[index];
+            
+            // Populate
+            document.getElementById('m-title').innerText = data.title;
+            document.getElementById('m-phase').innerText = data.phase;
+            document.getElementById('m-desc').innerText = data.desc;
+            document.getElementById('m-roi').innerText = data.roi;
+            document.getElementById('m-outcome').innerText = data.outcome;
+            
+            // Icon styling
+            const iconDiv = document.getElementById('m-icon');
+            iconDiv.className = `w-12 h-12 rounded-lg flex items-center justify-center text-2xl mb-6 text-white shadow-lg ${data.iconColor}`;
+            iconDiv.innerHTML = `<i class="fa-solid ${data.icon}"></i>`;
+
+            // Lists
+            const topics = document.getElementById('m-topics');
+            topics.innerHTML = '';
+            data.topics.forEach(t => topics.innerHTML += `<li class="flex items-center gap-3"><i class="fa-solid fa-check text-green-400 text-xs"></i> ${t}</li>`);
+
+            const tools = document.getElementById('m-tools');
+            tools.innerHTML = '';
+            data.tools.forEach(t => tools.innerHTML += `<span class="px-3 py-1 bg-slate-700 rounded text-xs text-white border border-slate-600">${t}</span>`);
+
+            // Show
+            modalOverlay.classList.remove('hidden');
+            // Slight delay to allow display:block to apply before opacity transition
+            setTimeout(() => {
+                modalOverlay.classList.remove('opacity-0');
+                modalContent.classList.add('modal-enter');
+            }, 10);
+        }
+
+        function closeModal() {
+            modalOverlay.classList.add('opacity-0');
+            setTimeout(() => {
+                modalOverlay.classList.add('hidden');
+                modalContent.classList.remove('modal-enter');
+            }, 300);
+        }
+
+        // Close on click outside
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) closeModal();
+        });
+    </script>
+</body>
+</html>
