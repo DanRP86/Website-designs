@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGENTIC AI // DEEP DIVE PLAYBOOK</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;400;600;800&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- 1. CORE AESTHETICS --- */
+        :root {
+            --void: #050505;
+            --metal: #1a1a1a;
+            --chrome: #e0e0e0;
+            --lux-gold: #D4AF37;
+            --laser-blue: #00f3ff;
+            --alert: #ff3333;
+            --success: #00ff88;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--void);
+            color: var(--chrome);
+            font-family: 'Manrope', sans-serif;
+            overflow-x: hidden;
+            overscroll-behavior: none; 
+        }
+
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+
+        /* --- 2. FIXED BACKGROUND --- */
+        #bg-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        /* --- 3. MAIN STAGE (STICKY 3D CONTAINER) --- */
+        .stage-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1200px;
+            pointer-events: none;
+        }
+
+        .gear-assembly {
+            position: relative;
+            width: 600px; height: 600px;
+            transform-style: preserve-3d;
+            transition: transform 0.2s cubic-bezier(0.1, 0.5, 0.1, 1);
+        }
+
+        /* GEAR RINGS */
+        .ring {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.05);
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            transition: all 0.5s ease;
+        }
+
+        .ring-outer { width: 550px; height: 550px; border: 1px dashed var(--lux-gold); opacity: 0.2; }
+        .ring-mid { width: 380px; height: 380px; border: 20px solid var(--metal); border-left-color: var(--chrome); border-right-color: var(--chrome); }
+        .ring-inner { width: 250px; height: 250px; border: 5px dotted var(--chrome); opacity: 0.5; }
+
+        .ring-core {
+            width: 140px; height: 140px;
+            background: radial-gradient(circle, #111 0%, #000 100%);
+            border: 2px solid var(--lux-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Syncopate', sans-serif;
+            font-weight: 700;
+            letter-spacing: 2px;
+            font-size: 12px;
+            color: var(--lux-gold);
+            text-shadow: 0 0 10px var(--lux-gold);
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.1);
+            z-index: 10;
+        }
+
+        /* 3D CARDS */
+        .capability-card {
+            position: absolute;
+            width: 240px; height: 320px;
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            top: 50%; left: 50%;
+            display: flex;
+            flex-direction: column;
+            padding: 25px;
+            transform-origin: center center;
+            opacity: 0;
+            transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
+
+        .card-header { 
+            border-bottom: 1px solid rgba(255,255,255,0.1); 
+            padding-bottom: 15px; margin-bottom: 15px;
+            display: flex; align-items: center; gap: 15px;
+        }
+        .card-icon { font-size: 24px; }
+        .card-title { font-family: 'Syncopate'; font-size: 11px; color: #fff; letter-spacing: 1px; }
+        .card-body { font-size: 12px; color: #999; line-height: 1.6; }
+        .card-tag { 
+            font-size: 9px; text-transform: uppercase; letter-spacing: 2px; 
+            margin-top: auto; color: var(--chrome); opacity: 0.5; 
+        }
+
+        /* --- 4. SCROLL CONTENT --- */
+        .scroll-track { position: relative; z-index: 10; width: 100%; }
+
+        section {
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 100px 10%;
+            position: relative;
+            pointer-events: none;
+        }
+
+        /* Text Styles */
+        .super-text {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 6vw;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255,255,255,0.3);
+            line-height: 0.9;
+            margin-bottom: 30px;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1s ease-out;
+        }
+
+        .highlight { color: #fff; -webkit-text-stroke: 0; }
+
+        .detail-box {
+            background: rgba(20, 20, 20, 0.8);
+            border-left: 3px solid var(--lux-gold);
+            padding: 30px;
+            max-width: 500px;
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: all 1s ease-out 0.2s;
+        }
+
+        .detail-title { font-family: 'Syncopate'; color: var(--lux-gold); margin-bottom: 15px; font-size: 14px; letter-spacing: 2px; }
+        .detail-body { font-size: 16px; line-height: 1.8; color: #ccc; }
+
+        .active .super-text { opacity: 1; transform: translateY(0); }
+        .active .detail-box { opacity: 1; transform: translateX(0); }
+
+        /* Section Specifics for Layout Variety */
+        section.right-align { align-items: flex-end; text-align: right; }
+        section.right-align .detail-box { border-left: none; border-right: 3px solid var(--laser-blue); transform: translateX(30px); }
+        section.right-align .active .detail-box { transform: translateX(0); }
+        
+        section.center-align { align-items: center; text-align: center; }
+        section.center-align .detail-box { border: 1px solid var(--alert); text-align: left; transform: translateY(30px); }
+        section.center-align .active .detail-box { transform: translateY(0); }
+
+        /* Progress UI */
+        .chapter-marker {
+            position: fixed; top: 50px; right: 50px;
+            font-family: 'Syncopate'; font-size: 12px; color: var(--chrome);
+            z-index: 20; opacity: 0.5;
+        }
+        .progress-line { position: fixed; bottom: 0; left: 0; height: 4px; background: #333; width: 100vw; z-index: 20; }
+        .progress-fill { height: 100%; width: 0%; background: var(--lux-gold); transition: width 0.1s linear; }
+
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <canvas id="bg-canvas"></canvas>
+
+    <div class="chapter-marker">CHAPTER <span id="chapter-num">01</span> // <span id="chapter-total">09</span></div>
+
+    <!-- STAGE: THE 3D MACHINE -->
+    <div class="stage-container">
+        <div class="gear-assembly" id="assembly">
+            <div class="ring ring-outer" id="ring1"></div>
+            <div class="ring ring-mid" id="ring2"></div>
+            <div class="ring ring-inner" id="ring3"></div>
+            <div class="ring ring-core" id="core">CORE</div>
+
+            <!-- CARD 1: EVOLUTION -->
+            <div class="capability-card" id="card-evolution" style="border-color: var(--chrome);">
+                <div class="card-header"><i class="fa-solid fa-clock-rotate-left card-icon"></i> <div class="card-title">Evolution</div></div>
+                <div class="card-body">The transition from Generative AI (Content Creation) to Agentic AI (Action Execution). The machine now has hands.</div>
+                <div class="card-tag">Status: Complete</div>
+            </div>
+
+            <!-- CARD 2: RISK -->
+            <div class="capability-card" id="card-risk" style="border-color: var(--alert);">
+                <div class="card-header"><i class="fa-solid fa-triangle-exclamation card-icon" style="color: var(--alert)"></i> <div class="card-title">Action Gap</div></div>
+                <div class="card-body">An LLM hallucinating text is embarrassing. An Agent hallucinating a financial transfer is catastrophic.</div>
+                <div class="card-tag">Priority: Critical</div>
+            </div>
+
+            <!-- CARD 3: GUARDRAILS -->
+            <div class="capability-card" id="card-guard" style="border-color: var(--laser-blue);">
+                <div class="card-header"><i class="fa-solid fa-filter card-icon" style="color: var(--laser-blue)"></i> <div class="card-title">Input/Output</div></div>
+                <div class="card-body">Strict filtering layers. Preventing prompt injection on entry and verifying logic on exit.</div>
+                <div class="card-tag">Layer: Defense</div>
+            </div>
+
+            <!-- CARD 4: DETERMINISTIC -->
+            <div class="capability-card" id="card-code" style="border-color: var(--success);">
+                <div class="card-header"><i class="fa-solid fa-code card-icon" style="color: var(--success)"></i> <div class="card-title">Deterministic</div></div>
+                <div class="card-body">Agents should not "guess" via LLM. They should execute verified, deterministic code blocks for critical tasks.</div>
+                <div class="card-tag">Layer: Logic</div>
+            </div>
+
+            <!-- CARD 5: OVERSIGHT -->
+            <div class="capability-card" id="card-human" style="border-color: var(--lux-gold);">
+                <div class="card-header"><i class="fa-solid fa-user-astronaut card-icon" style="color: var(--lux-gold)"></i> <div class="card-title">Human Loop</div></div>
+                <div class="card-body">Strategic intervention. Not micromanagement (In-the-loop), but supervisory control (On-the-loop).</div>
+                <div class="card-tag">Layer: Governance</div>
+            </div>
+            
+            <!-- CARD 6: TRUST -->
+            <div class="capability-card" id="card-trust" style="border-color: #fff;">
+                <div class="card-header"><i class="fa-solid fa-building-shield card-icon"></i> <div class="card-title">Control Tower</div></div>
+                <div class="card-body">A centralized dashboard to monitor agent swarms, logging every decision for audit trails.</div>
+                <div class="card-tag">Status: Future</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCROLL TRACK -->
+    <div class="scroll-track">
+        
+        <!-- 1. INTRODUCTION -->
+        <section id="sec-1" class="active">
+            <div class="super-text">THE NEXT <br><span class="highlight">EVOLUTION</span></div>
+            <div class="detail-box">
+                <div class="detail-title">FROM CHAT TO ACTION</div>
+                <div class="detail-body">
+                    We are witnessing a phase shift. Generative AI allowed machines to <em>speak</em>. Agentic AI allows machines to <em>do</em>. <br><br>
+                    Agents can now plan complex workflows, use software tools, and execute transactions autonomously. But this power creates a new vector of corporate risk.
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. THE RISK LANDSCAPE -->
+        <section id="sec-2" class="right-align">
+            <div class="super-text" style="-webkit-text-stroke-color: rgba(255, 50, 50, 0.5);">THE ACTION <br><span class="highlight" style="color: var(--alert)">GAP</span></div>
+            <div class="detail-box" style="border-color: var(--alert);">
+                <div class="detail-title">WHEN HALLUCINATIONS CLICK BUTTONS</div>
+                <div class="detail-body">
+                    In GenAI, a mistake means a wrong sentence. In Agentic AI, a mistake could mean a wrong payment, a deleted database, or a security breach.<br><br>
+                    Traditional cybersecurity protects systems from outsiders. We now need architectures that protect systems from <em>insider</em> AI agents.
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. ARCHITECTURE OVERVIEW -->
+        <section id="sec-3" class="center-align">
+            <div class="super-text">THE SAFETY <br><span class="highlight">STACK</span></div>
+            <div class="detail-box" style="border: 1px solid #fff; text-align: center;">
+                <div class="detail-title">DEFENSE IN DEPTH</div>
+                <div class="detail-body">
+                    McKinsey proposes a multi-layered safety architecture. It's not just about "better prompting." It requires hard-coded engineering guardrails that sit <em>outside</em> the neural network.
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. INPUT FILTERS -->
+        <section id="sec-4">
+            <div class="super-text">LAYER 01 <br><span class="highlight" style="color: var(--laser-blue)">FILTRATION</span></div>
+            <div class="detail-box" style="border-color: var(--laser-blue);">
+                <div class="detail-title">INPUT & OUTPUT GUARDRAILS</div>
+                <div class="detail-body">
+                    <strong>Input:</strong> Scan prompts for injection attacks (e.g., "Ignore previous instructions").<br>
+                    <strong>Output:</strong> Verify agent decisions against policy before execution. If an agent tries to transfer >$10k, a hard-coded circuit breaker must trip.
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. DETERMINISTIC EXECUTION -->
+        <section id="sec-5" class="right-align">
+            <div class="super-text">LAYER 02 <br><span class="highlight" style="color: var(--success)">VERIFICATION</span></div>
+            <div class="detail-box" style="border-color: var(--success);">
+                <div class="detail-title">CODE > PROBABILITIES</div>
+                <div class="detail-body">
+                    LLMs are probabilistic (they guess). Business logic must be deterministic (it knows).<br><br>
+                    <strong>The Solution:</strong> Agents should write code to solve math or logic problems, then execute that code in a sandbox. Don't ask the LLM to calculate; ask it to write a Python script that calculates.
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. HUMAN OVERSIGHT -->
+        <section id="sec-6">
+            <div class="super-text">LAYER 03 <br><span class="highlight" style="color: var(--lux-gold)">OVERSIGHT</span></div>
+            <div class="detail-box">
+                <div class="detail-title">HUMAN-ON-THE-LOOP</div>
+                <div class="detail-body">
+                    <strong>In-the-Loop:</strong> Human approves every step (Too slow, unscalable).<br>
+                    <strong>On-the-Loop:</strong> Human sets goals and monitors dashboards. The system alerts the human only when confidence scores drop below a threshold.
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. SHIFT LEFT -->
+        <section id="sec-7" class="center-align">
+            <div class="super-text">SHIFT <br><span class="highlight">LEFT</span></div>
+            <div class="detail-box">
+                <div class="detail-title">TESTING & RED TEAMING</div>
+                <div class="detail-body">
+                    Safety begins before deployment. "Red Teaming" involves hiring experts to try and break your agent—forcing it to do illegal or harmful things—to patch vulnerabilities before they go live.
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. GOVERNANCE -->
+        <section id="sec-8" class="right-align">
+            <div class="super-text">CONTROL <br><span class="highlight">TOWER</span></div>
+            <div class="detail-box" style="border-color: #fff;">
+                <div class="detail-title">THE MONITORING DASHBOARD</div>
+                <div class="detail-body">
+                    Organizations need a central "Air Traffic Control" for agents. This system tracks agent health, latency, cost, and accuracy in real-time, allowing instant shutdown of rogue agents.
+                </div>
+            </div>
+        </section>
+
+        <!-- 9. CONCLUSION -->
+        <section id="sec-9" class="center-align">
+            <div class="super-text">SCALABLE <br><span class="highlight" style="color: var(--lux-gold)">TRUST</span></div>
+            <div class="detail-box" style="border: 1px solid var(--lux-gold);">
+                <div class="detail-title">THE PLAYBOOK</div>
+                <div class="detail-body">
+                    1. Define the risk profile.<br>
+                    2. Engineer the guardrails.<br>
+                    3. Implement the human loop.<br>
+                    4. Monitor from the tower.<br><br>
+                    Only then can you deploy Agentic AI with confidence.
+                </div>
+            </div>
+        </section>
+        
+        <div style="height: 50vh;"></div>
+    </div>
+
+    <div class="progress-line"><div class="progress-fill" id="progress"></div></div>
+
+    <script>
+        (function() {
+        
+        /* --- VARIABLES --- */
+        const assembly = document.getElementById('assembly');
+        const core = document.getElementById('core');
+        const rings = [document.getElementById('ring1'), document.getElementById('ring2'), document.getElementById('ring3')];
+        const cards = {
+            evolution: document.getElementById('card-evolution'),
+            risk: document.getElementById('card-risk'),
+            guard: document.getElementById('card-guard'),
+            code: document.getElementById('card-code'),
+            human: document.getElementById('card-human'),
+            trust: document.getElementById('card-trust')
+        };
+        
+        // Color Palette for Core
+        const colors = {
+            base: '#D4AF37',
+            alert: '#ff3333',
+            safe: '#00f3ff',
+            success: '#00ff88',
+            white: '#ffffff'
+        };
+
+        /* --- INTERSECTION OBSERVER (TEXT) --- */
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    // Update Chapter Number
+                    const id = entry.target.id.split('-')[1];
+                    document.getElementById('chapter-num').innerText = "0" + id;
+                } else {
+                    entry.target.classList.remove('active');
+                }
+            });
+        }, { threshold: 0.4 });
+
+        document.querySelectorAll('section').forEach(sec => observer.observe(sec));
+
+        /* --- SCROLL LOGIC --- */
+        let scrollPos = 0;
+        let targetScrollPos = 0;
+
+        function lerp(start, end, t) { return start * (1 - t) + end * t; }
+
+        window.addEventListener('scroll', () => { targetScrollPos = window.scrollY; });
+
+        function updateEngine() {
+            scrollPos = lerp(scrollPos, targetScrollPos, 0.05); // Slower lerp for heavier feel
+            
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = scrollPos / maxScroll; // 0.0 to 1.0
+            
+            // Update Progress Bar
+            document.getElementById('progress').style.width = (progress * 100) + '%';
+
+            // --- 1. GEAR ANIMATION ---
+            // Continuous rotation based on scroll
+            rings[0].style.transform = `translate(-50%, -50%) rotateZ(${progress * 360}deg)`;
+            rings[1].style.transform = `translate(-50%, -50%) rotateZ(${progress * -720}deg)`;
+            rings[2].style.transform = `translate(-50%, -50%) rotateX(${progress * 360}deg) rotateY(${progress * 180}deg)`;
+            
+            // Assembly Tilt (Wobble effect)
+            assembly.style.transform = `
+                rotateX(${Math.sin(progress * Math.PI * 2) * 20}deg) 
+                rotateY(${Math.cos(progress * Math.PI * 2) * 20}deg)
+                scale(${1 - (Math.sin(progress * Math.PI) * 0.1)})
+            `;
+
+            // --- 2. CARD CHOREOGRAPHY ---
+            // Reset all first
+            Object.values(cards).forEach(c => {
+                c.style.opacity = 0;
+                c.style.transform = 'translate(-50%, -50%) scale(0.5)';
+                c.style.zIndex = 0;
+            });
+
+            // Helper to show card
+            const showCard = (card, x, y, rotZ, color) => {
+                card.style.opacity = 1;
+                card.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) rotateZ(${rotZ}deg) scale(1)`;
+                card.style.zIndex = 10;
+                core.style.borderColor = color;
+                core.style.color = color;
+                core.style.textShadow = `0 0 20px ${color}`;
+            };
+
+            // Timeline mapping (approximate based on sections)
+            // Sec 1 (0.0 - 0.1): Evolution
+            if (progress < 0.15) {
+                showCard(cards.evolution, 0, 0, 0, colors.base);
+            }
+            // Sec 2 (0.15 - 0.25): Risk
+            else if (progress < 0.30) {
+                showCard(cards.risk, 0, 0, 5, colors.alert);
+            }
+            // Sec 3 & 4 (0.30 - 0.50): Guardrails
+            else if (progress < 0.50) {
+                showCard(cards.guard, -200, 0, -10, colors.safe);
+                // Transition effect
+                if(progress > 0.40) {
+                    cards.risk.style.opacity = 0.2;
+                    cards.risk.style.transform = `translate(calc(-50% + 200px), -50%) scale(0.8)`;
+                }
+            }
+            // Sec 5 (0.50 - 0.65): Deterministic Code
+            else if (progress < 0.65) {
+                showCard(cards.code, 200, 0, 10, colors.success);
+                cards.guard.style.opacity = 0.2; // Keep previous visible faintly
+                cards.guard.style.transform = `translate(calc(-50% - 200px), -50%) scale(0.8)`;
+            }
+            // Sec 6 (0.65 - 0.80): Human
+            else if (progress < 0.85) {
+                showCard(cards.human, 0, -200, 0, colors.base);
+            }
+            // Sec 7-9: Trust/Tower
+            else {
+                showCard(cards.trust, 0, 0, 0, colors.white);
+                // Swarm effect for others?
+                cards.human.style.opacity = 0.3;
+                cards.human.style.transform = `translate(calc(-50% - 250px), -50%) rotateZ(-10deg) scale(0.7)`;
+                cards.code.style.opacity = 0.3;
+                cards.code.style.transform = `translate(calc(-50% + 250px), -50%) rotateZ(10deg) scale(0.7)`;
+            }
+
+            requestAnimationFrame(updateEngine);
+        }
+        updateEngine();
+
+        /* --- BACKGROUND PARTICLES --- */
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let cw, ch;
+        let particles = [];
+
+        function resize() { cw = canvas.width = window.innerWidth; ch = canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * cw; this.y = Math.random() * ch;
+                this.vx = (Math.random() - 0.5) * 0.5; this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2;
+            }
+            update() {
+                this.x += this.vx; this.y += this.vy;
+                if(this.x < 0) this.x = cw; if(this.x > cw) this.x = 0;
+                if(this.y < 0) this.y = ch; if(this.y > ch) this.y = 0;
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(255,255,255,0.2)';
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill();
+            }
+        }
+
+        for(let i=0; i<80; i++) particles.push(new Particle());
+
+        function animateParticles() {
+            ctx.clearRect(0,0,cw,ch);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        })();
+    </script>
+</body>
+</html>
