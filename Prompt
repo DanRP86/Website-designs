@@ -1,0 +1,108 @@
+Powerful Prompt for AI Website Builder
+Objective:
+Create an interactive, visually impressive webpage using CANVAS (or similar) that presents two parallel learning journeys for AI capability development:
+
+AI Champion Capability Roadmap (full journey, detailed chapters and subchapters)
+Fast Track Leadership Team Roadmap (condensed journey, fewer chapters/subchapters)
+All data must be synthetic and anonymized.
+
+
+1. Website Structure & Streams
+
+
+Homepage:
+
+Hero section with dynamic visuals (animated, bold colors, “wow” effect)
+Brief intro: “Explore two transformative AI learning journeys—choose your path!”
+
+
+
+Stream Selector:
+
+Interactive toggle or tabs:
+
+“AI Champion Journey”
+“Fast Track Leadership Team Journey”
+
+
+
+
+
+Journey Pages:
+
+For each stream, display a roadmap as a horizontal or vertical timeline (use CANVAS for interactive elements)
+Each chapter is a clickable card; subchapters expand on click/hover
+Synthetic data: Use generic names (e.g., “Module 1: AI Fundamentals”, “Module 2: Agentic AI”, etc.)
+For each module, show:
+
+Duration (weeks/months)
+Format (online, workshop, labs)
+Key topics (bulleted list)
+Learning outcomes (bulleted list)
+Example activities (synthetic, e.g., “Map a process”, “Design an agent”)
+Assessment type (quiz, project, peer review)
+Certification criteria (completion, capstone, feedback)
+Time commitment summary (table or infographic)
+
+
+
+
+
+Comparison Page:
+
+Side-by-side view of both journeys (timeline, modules, outcomes)
+Highlight differences in depth, duration, and focus
+
+
+
+“Wow” Canvas Elements:
+
+Animated transitions between chapters
+Interactive infographics (e.g., progress bars, competency meters)
+Hover effects, pop-up tooltips with synthetic examples
+Custom icons for each module/phase
+Responsive design for desktop/tablet/mobile
+
+
+
+
+2. Data Model (Synthetic Example)
+
+
+AI Champion Journey:
+
+5 Phases, 20+ modules, 12 months, 320–432 hours
+Example modules: “AI Fundamentals”, “Process Mapping”, “Agent Design”, “Governance”, “Business Model Innovation”, “Capstone Project”
+Each module: 1–3 weeks, 5–8 hours/week
+
+
+
+Fast Track Journey:
+
+5 modules, 11 weeks, 30–40 hours
+Example modules: “AI Essentials”, “Agentic AI”, “Process Mapping”, “Governance”, “Business Model Innovation”
+
+
+
+
+3. Visual & UX Requirements
+
+Use CANVAS for all interactive timelines, cards, and infographics
+Color palette: Vibrant, modern, high contrast
+Typography: Bold headings, readable body text
+Layout: Clean, spacious, intuitive navigation
+Accessibility: Alt text for visuals, keyboard navigation
+
+
+4. Instructions for the AI Tool
+
+Ensure both journeys are fully represented, with clear differentiation
+Prioritize “wow” factor in visuals and interactivity (see attached canvas for inspiration)
+Template must be easily adaptable for future real data integration
+Output should be ready for export/deployment as a standalone webpage
+
+
+5. Example Synthetic Module (for reference)
+JSON{  "module": "AI Fundamentals",  "duration": "2 weeks",  "format": "Self-paced online + workshops",  "key_topics": [    "What is AI/ML/LLM",    "Generative AI vs. traditional AI",    "Neural networks basics",    "AI reliability and bias"  ],  "learning_outcomes": [    "Define AI applications",    "Identify AI limitations",    "Articulate AI value to stakeholders"  ],  "assessment": "Quiz + project",  "certification": "Completion + capstone"}Show more lines
+
+End of Prompt
