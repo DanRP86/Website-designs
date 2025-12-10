@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Readiness & Potential Audit</title>
+    <style>
+        /* --- CORE VISUALS: DARK FUTURISTIC --- */
+        :root {
+            --bg-core: #050505;
+            --bg-card: rgba(20, 20, 25, 0.6);
+            --neon-blue: #00f3ff;
+            --neon-purple: #bc13fe;
+            --neon-green: #0aff60;
+            --neon-yellow: #ffaa00;
+            --neon-red: #ff4444;
+            --text-main: #ffffff;
+            --text-sub: #8b9bb4;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: 'SF Pro Display', 'Inter', system-ui, sans-serif;
+            background-color: var(--bg-core);
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(188, 19, 254, 0.1), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(0, 243, 255, 0.1), transparent 25%);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* --- CONTAINER --- */
+        .app-frame {
+            width: 100%;
+            max-width: 900px;
+            height: 90vh;
+            background: var(--bg-card);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 1s ease-out;
+        }
+
+        /* --- WATERMARK --- */
+        .watermark {
+            position: fixed;
+            bottom: 15px;
+            right: 20px;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.15); /* Muy sutil */
+            pointer-events: none;
+            z-index: 1000;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- HEADER --- */
+        .top-bar {
+            padding: 25px 40px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, #fff, var(--text-sub));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 0.9rem;
+        }
+
+        /* --- CONTENT STAGES --- */
+        .stage-wrapper {
+            flex: 1;
+            position: relative;
+            padding: 40px 60px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .stage {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+            height: 100%;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .stage.active {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- TYPOGRAPHY --- */
+        h1 { font-size: 3rem; margin: 0 0 10px 0; letter-spacing: -1px; line-height: 1.1; }
+        h2 { font-size: 2rem; margin-bottom: 20px; font-weight: 500; }
+        p { color: var(--text-sub); font-size: 1.1rem; line-height: 1.6; max-width: 700px; }
+        
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+            border: 1px solid currentColor;
+        }
+
+        /* --- INPUTS --- */
+        .input-group { margin-bottom: 25px; }
+        label { display: block; font-size: 0.9rem; font-weight: 700; color: var(--text-sub); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        
+        input[type="email"], input[type="text"] {
+            width: 100%;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid #444;
+            padding: 18px;
+            color: white;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            outline: none;
+            transition: 0.3s;
+        }
+        input:focus { border-color: var(--neon-blue); box-shadow: 0 0 15px rgba(0, 243, 255, 0.2); }
+
+        .radio-group { display: grid; gap: 15px; }
+        .radio-option {
+            background: rgba(255,255,255,0.05);
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+        }
+        .radio-option:hover { background: rgba(255,255,255,0.1); }
+        .radio-option.selected { border-color: var(--neon-blue); background: rgba(0, 243, 255, 0.1); }
+        .radio-circle {
+            width: 18px; height: 18px; border-radius: 50%; border: 2px solid #666; margin-right: 15px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .radio-option.selected .radio-circle { border-color: var(--neon-blue); }
+        .radio-option.selected .radio-circle::after { content:''; width: 8px; height: 8px; background: var(--neon-blue); border-radius: 50%; }
+
+        /* --- SLIDER 1-10 --- */
+        .slider-container {
+            margin-top: 40px;
+            background: rgba(0,0,0,0.3);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .range-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: var(--text-sub);
+        }
+        .label-box { width: 45%; }
+        .label-box strong { display: block; color: var(--neon-blue); margin-bottom: 5px; font-size: 1.2rem; }
+        .label-right { text-align: right; }
+        .label-right strong { color: var(--neon-green); }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 28px;
+            width: 28px;
+            border-radius: 50%;
+            background: #fff;
+            cursor: pointer;
+            margin-top: -12px;
+            box-shadow: 0 0 20px rgba(255,255,255,0.8);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #333;
+            border-radius: 2px;
+        }
+        input[type=range]:focus { outline: none; }
+        
+        .score-display {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: 800;
+            margin-top: 20px;
+            color: var(--neon-blue);
+            text-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
+        }
+
+        /* --- RESULTS LAYOUT --- */
+        .results-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            justify-items: center;
+            gap: 20px;
+            text-align: center;
+        }
+
+        #matrixCanvas {
+            background: #080808; 
+            border-radius: 16px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            max-width: 100%;
+        }
+
+        .verdict-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 12px;
+            max-width: 600px;
+            margin-top: 10px;
+            animation: fadeIn 1.5s ease;
+        }
+
+        .verdict-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 10px; text-transform: uppercase; }
+        .verdict-desc { font-size: 1rem; color: var(--text-sub); margin: 0; line-height: 1.5; }
+
+        /* --- FOOTER --- */
+        .footer-bar {
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border);
+        }
+
+        button {
+            background: transparent;
+            color: #fff;
+            border: 1px solid #555;
+            padding: 12px 30px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+        button:hover { border-color: #fff; }
+        button.primary {
+            background: #fff; color: #000; border: none; font-weight: 700;
+        }
+        button.primary:hover {
+            box-shadow: 0 0 20px rgba(255,255,255,0.4); transform: scale(1.05);
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<!-- WATERMARK -->
+<div class="watermark">Created by Daniel Rubio Paniagua</div>
+
+<div class="app-frame">
+    <!-- Header -->
+    <div class="top-bar">
+        <div class="logo">AI READINESS AUDIT</div>
+        <div style="font-size:0.8rem; color:var(--text-sub)" id="progressText"></div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="stage-wrapper">
+        
+        <!-- 1. WELCOME & SCOPE -->
+        <div class="stage active" id="stage-welcome">
+            <h1>Intelligence Assessment</h1>
+            <p>Please define the scope of this audit to calibrate the analysis.</p>
+            
+            <div style="margin-top: 40px;">
+                <!-- EMAIL INPUT -->
+                <div class="input-group">
+                    <label>User ID (Email)</label>
+                    <input type="email" id="userEmail" placeholder="name@company.com">
+                </div>
+
+                <!-- SCOPE SELECTION -->
+                <div class="input-group">
+                    <label>AI Readiness Questionnaire Destination</label>
+                    <div class="radio-group">
+                        <div class="radio-option" onclick="selectScope('individual', this)">
+                            <div class="radio-circle"></div> Individual Work
+                        </div>
+                        <div class="radio-option" onclick="selectScope('process', this)">
+                            <div class="radio-circle"></div> Specific Process Flow
+                        </div>
+                        <div class="radio-option" onclick="selectScope('department', this)">
+                            <div class="radio-circle"></div> Full Department / Business Unit
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CONDITIONAL INPUT -->
+                <div id="process-input-container" class="input-group hidden" style="animation: fadeIn 0.5s">
+                    <label style="color:var(--neon-blue)">Please specify the Process Flow</label>
+                    <input type="text" id="processName" placeholder="e.g. Monthly Invoicing Reconciliation">
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. QUESTION STAGE -->
+        <div class="stage" id="stage-questions">
+            <span class="badge" id="q-category" style="color: var(--neon-blue)">Category</span>
+            <h2 id="q-title">Question Title</h2>
+            <p id="q-desc">Question Description goes here...</p>
+
+            <div class="slider-container">
+                <div class="range-labels">
+                    <div class="label-box">
+                        <strong>1</strong>
+                        <span id="label-low">Low desc</span>
+                    </div>
+                    <div class="label-box label-right">
+                        <strong>10</strong>
+                        <span id="label-high">High desc</span>
+                    </div>
+                </div>
+                
+                <input type="range" min="1" max="10" value="5" id="scoreRange" oninput="updateScoreDisplay(this.value)">
+                
+                <div class="score-display" id="scoreVal">5</div>
+            </div>
+        </div>
+
+        <!-- 3. RESULTS STAGE -->
+        <div class="stage" id="stage-results">
+            <div class="results-container">
+                <h1 style="font-size:2.5rem; margin-bottom: 0px;">Strategic Analysis</h1>
+                <p style="margin-top: 5px;">Visualizing Readiness vs. Potential Matrix</p>
+                
+                <!-- Canvas Container -->
+                <div style="position: relative; margin: 10px auto;">
+                    <canvas id="matrixCanvas" width="500" height="400"></canvas>
+                </div>
+
+                <!-- Dynamic Verdict Box -->
+                <div id="verdict-container" class="verdict-card">
+                    <div id="verdict-title" class="verdict-title">--</div>
+                    <p id="verdict-desc" class="verdict-desc">--</p>
+                </div>
+
+                <div>
+                    <button class="primary" onclick="sendEmail()" style="background: var(--neon-blue); color: black; padding: 15px 40px; font-size: 1.1rem;">
+                        📩 Send Report
+                    </button>
+                    <p style="font-size: 0.8rem; margin-top: 15px; opacity: 0.6;">
+                        Generates a JSON payload for Daniel Rubio Paniagua.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FOOTER NAV -->
+    <div class="footer-bar">
+        <button id="btnPrev" onclick="navigate(-1)" style="opacity:0">Back</button>
+        <button id="btnNext" class="primary" onclick="navigate(1)">Start Audit</button>
+    </div>
+</div>
+
+<script>
+    // --- DATA CONFIGURATION ---
+    const questions = [
+        // BLOCK 1: TECHNICAL (X-AXIS)
+        {
+            category: "Technical Stability", type: "tech",
+            title: "Human Operational Variance",
+            desc: "If 3 different employees perform this task now, would the final result and the intermediate steps be identical?",
+            low: "Each person has their own system/templates.",
+            high: "All follow the same strict, written flow (indistinguishable)."
+        },
+        {
+            category: "Technical Stability", type: "tech",
+            title: "Input Taxonomy & Structure",
+            desc: "What is the nature of the source files? Is the data tabulated and structured, or dispersed 'literature'?",
+            low: "Info stuck in PowerPoints, voice notes, image PDFs, or scattered emails.",
+            high: "Structured fields in ERP/CRM, clean CSVs, or 'super-ordered' Excels."
+        },
+        {
+            category: "Technical Stability", type: "tech",
+            title: "Explicit Knowledge Status",
+            desc: "Is there an updated, step-by-step Standard Operating Procedure (SOP) that a new hire could follow without asking anyone?",
+            low: "Non-existent, or an outdated document no one reads.",
+            high: "Living SOPs, updated videos, or wikis that reflect the current reality."
+        },
+        {
+            category: "Technical Stability", type: "tech",
+            title: "Historical Data Integrity",
+            desc: "Where does historical data (for context/training) live, and what is its consistency?",
+            low: "Fragmented across local hard drives, personal folders, or multiple versions.",
+            high: "A single, centralized location (Data Warehouse/SharePoint) with version control."
+        },
+        {
+            category: "Technical Stability", type: "tech",
+            title: "Process Exceptionality Rate",
+            desc: "What percentage of cases require an 'out-of-manual workaround' or creative solution outside the standard process?",
+            low: "'Every case is unique'; more than 50% are exceptions.",
+            high: "Exceptions are rare (<1%) and are fully typified."
+        },
+        // BLOCK 2: AGENT POTENTIAL/ROI (Y-AXIS)
+        {
+            category: "Agent Potential (ROI)", type: "roi",
+            title: "Need for Semantic Reasoning",
+            desc: "Does the task's value reside in interpreting, summarizing, or extracting intent from variable data?",
+            low: "Pure arithmetic or copy/paste (RPA).",
+            high: "Requires judging context, tone, or summarizing documents."
+        },
+        {
+            category: "Agent Potential (ROI)", type: "roi",
+            title: "Navigation Complexity (Tool Use)",
+            desc: "How many different interfaces/apps must be touched to complete a single task iteration?",
+            low: "Single window task.",
+            high: "Requires logging into 3+ systems, searching folders, and cross-referencing."
+        },
+        {
+            category: "Agent Potential (ROI)", type: "roi",
+            title: "Error Tolerance (Hallucination Risk)",
+            desc: "What is the operational or legal consequence if the AI makes a factual error or 'hallucinates' that goes unnoticed?",
+            low: "Catastrophic (Legal suit, financial loss, safety risk).",
+            high: "Low/Reversible (Internal draft, lead classification, easy to fix)."
+        },
+        {
+            category: "Agent Potential (ROI)", type: "roi",
+            title: "Interpersonal Criticality (EQ & Stakes)",
+            desc: "Does the interaction require empathy, high-stakes negotiation, or managing sensitive political/personal dynamics?",
+            low: "High EQ/Status required (e.g., HR sensitive talks, VIP client negotiation).",
+            high: "Transactional (Scheduling, FAQ, data collection, status updates)."
+        },
+        {
+            category: "Agent Potential (ROI)", type: "roi",
+            title: "Volume of 'Drudgery' (ROI)",
+            desc: "Is this a high-volume, repetitive task that consumes significant hours and causes team burnout?",
+            low: "Low volume / Creative work.",
+            high: "High volume / 'Soul-crushing' repetitive work (>20h/week)."
+        },
+        // BLOCK 3: CULTURE (HIDDEN)
+        {
+            category: "Cultural Adoption", type: "culture",
+            title: "AI Adoption & Literacy",
+            desc: "How often do you currently use AI tools (ChatGPT, Gemini, Copilot, etc.) in your personal or professional life?",
+            low: "Never / Not interested.",
+            high: "Daily user / Have custom prompts and pay for Plus versions."
+        },
+        {
+            category: "Cultural Adoption", type: "culture",
+            title: "Perception of Job Impact",
+            desc: "If we automate 50% of this task, how do you visualize your future role in the company one year from now?",
+            low: "Threat: 'I worry my position will become redundant.'",
+            high: "Opportunity: 'I can shift to strategic/creative tasks.'"
+        },
+        {
+            category: "Cultural Adoption", type: "culture",
+            title: "Skepticism & Trust Factor",
+            desc: "Honestly, do you believe it is possible to standardize the current process 'chaos' in this department so a machine can understand it?",
+            low: "Cynical: 'No, every day is a new fire; theory doesn't apply here.'",
+            high: "Believer: 'Yes, fundamentally it is logical; we just need discipline.'"
+        }
+    ];
+
+    // --- STATE ---
+    let currentStage = 0; // 0=Welcome, 1..N=Questions, 99=Result
+    let answers = new Array(questions.length).fill(5); // Default value 5
+    let scopeData = { type: '', detail: '', email: '' };
+
+    // --- DOM REFERENCES ---
+    const stages = {
+        welcome: document.getElementById('stage-welcome'),
+        questions: document.getElementById('stage-questions'),
+        results: document.getElementById('stage-results')
+    };
+
+    function selectScope(type, el) {
+        // Visual selection
+        document.querySelectorAll('.radio-option').forEach(d => d.classList.remove('selected'));
+        el.classList.add('selected');
+        
+        // Logic
+        scopeData.type = type;
+        const inputContainer = document.getElementById('process-input-container');
+        if (type === 'process') {
+            inputContainer.classList.remove('hidden');
+        } else {
+            inputContainer.classList.add('hidden');
+            scopeData.detail = ''; // clear detail if not process
+        }
+    }
+
+    function updateScoreDisplay(val) {
+        document.getElementById('scoreVal').innerText = val;
+    }
+
+    function navigate(dir) {
+        // Validation on Welcome Screen
+        if (currentStage === 0 && dir === 1) {
+            const email = document.getElementById('userEmail').value;
+            if (!email.includes('@') || !scopeData.type) {
+                alert("Please provide a valid Email and select a Destination.");
+                return;
+            }
+            if (scopeData.type === 'process' && !document.getElementById('processName').value) {
+                alert("Please specify the Process Flow.");
+                return;
+            }
+            scopeData.email = email;
+            if(scopeData.type === 'process') scopeData.detail = document.getElementById('processName').value;
+            
+            // Move to first question
+            currentStage = 1;
+            loadQuestion(0);
+            updateView();
+            return;
+        }
+
+        // Logic for Questions
+        if (currentStage > 0 && currentStage <= questions.length) {
+            // Save current answer
+            const val = document.getElementById('scoreRange').value;
+            answers[currentStage - 1] = parseInt(val);
+
+            // Move index
+            const nextIdx = currentStage + dir;
+            
+            if (nextIdx > questions.length) {
+                // To Results
+                currentStage = 99; 
+                updateView();
+                // Brief delay to ensure DOM is ready for canvas
+                setTimeout(renderMatrix, 300); 
+            } else if (nextIdx < 1) {
+                // Back to Welcome
+                currentStage = 0;
+                updateView();
+            } else {
+                // Next Question
+                currentStage = nextIdx;
+                loadQuestion(currentStage - 1);
+            }
+        }
+    }
+
+    function loadQuestion(idx) {
+        const q = questions[idx];
+        document.getElementById('q-category').innerText = q.category;
+        document.getElementById('q-title').innerText = q.title;
+        document.getElementById('q-desc').innerText = q.desc;
+        document.getElementById('label-low').innerText = q.low;
+        document.getElementById('label-high').innerText = q.high;
+        
+        const existingAns = answers[idx];
+        document.getElementById('scoreRange').value = existingAns;
+        document.getElementById('scoreVal').innerText = existingAns;
+        
+        document.getElementById('progressText').innerText = `QUESTION ${idx+1} / ${questions.length}`;
+    }
+
+    function updateView() {
+        Object.values(stages).forEach(s => s.classList.remove('active'));
+        
+        const btnPrev = document.getElementById('btnPrev');
+        const btnNext = document.getElementById('btnNext');
+
+        if (currentStage === 0) {
+            stages.welcome.classList.add('active');
+            btnPrev.style.opacity = '0';
+            btnNext.innerText = "Start Audit";
+            btnNext.style.display = 'block';
+        } else if (currentStage === 99) {
+            stages.results.classList.add('active');
+            btnPrev.style.display = 'none';
+            btnNext.style.display = 'none';
+        } else {
+            stages.questions.classList.add('active');
+            btnPrev.style.opacity = '1';
+            btnPrev.style.display = 'block';
+            btnNext.innerText = (currentStage === questions.length) ? "Finish" : "Next";
+            btnNext.style.display = 'block';
+        }
+    }
+
+    // --- MATRIX ANIMATION & LOGIC ---
+    function renderMatrix() {
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+        const w = canvas.width;
+        const h = canvas.height;
+        const pad = 40; // Padding for axes
+        
+        // Chart Area Dimensions
+        const chartW = w - (pad * 2);
+        const chartH = h - (pad * 2);
+        
+        // Calculate Scores (0-10 scale)
+        let techSum=0, roiSum=0, cultSum=0;
+        let techCount=0, roiCount=0, cultCount=0;
+
+        questions.forEach((q, i) => {
+            if(q.type === 'tech') { techSum += answers[i]; techCount++; }
+            if(q.type === 'roi') { roiSum += answers[i]; roiCount++; }
+            if(q.type === 'culture') { cultSum += answers[i]; cultCount++; }
+        });
+
+        // Avoid division by zero
+        const techScore = techCount > 0 ? techSum / techCount : 0;
+        const roiScore = roiCount > 0 ? roiSum / roiCount : 0;
+        
+        // --- ANIMATION LOOP ---
+        let frame = 0;
+        
+        function animate() {
+            // Clear
+            ctx.fillStyle = "#080808";
+            ctx.fillRect(0,0,w,h);
+            
+            // --- DRAW QUADRANTS (BACKGROUND) ---
+            // Midpoint logic based on 50% of chart size (Score 5.5 visual center)
+            const midX = pad + (chartW / 2);
+            const midY = pad + (chartH / 2);
+
+            // Q1: QUICK WIN (Top Right)
+            ctx.fillStyle = "rgba(10, 255, 96, 0.08)"; // Green glow
+            ctx.fillRect(midX, pad, chartW/2, chartH/2);
+
+            // Q2: STRATEGIC (Top Left)
+            ctx.fillStyle = "rgba(255, 170, 0, 0.08)"; // Orange glow
+            ctx.fillRect(pad, pad, chartW/2, chartH/2);
+            
+            // Q3: AI NOT USEFUL (Bottom Left) - Formerly Danger
+            ctx.fillStyle = "rgba(255, 68, 68, 0.08)"; // Red glow
+            ctx.fillRect(pad, midY, chartW/2, chartH/2);
+
+            // Q4: TECH TOY (Bottom Right)
+            ctx.fillStyle = "rgba(0, 243, 255, 0.08)"; // Blue glow
+            ctx.fillRect(midX, midY, chartW/2, chartH/2);
+
+            // --- GRID LINES ---
+            ctx.strokeStyle = "#333";
+            ctx.lineWidth = 1;
+            
+            // Draw grid (10x10)
+            for(let i=0; i<=10; i++) {
+                // Horizontal lines
+                let y = pad + (i/10)*chartH;
+                ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(w-pad, y); ctx.stroke();
+                
+                // Vertical lines
+                let x = pad + (i/10)*chartW;
+                ctx.beginPath(); ctx.moveTo(x, pad); ctx.lineTo(x, h-pad); ctx.stroke();
+            }
+
+            // --- AXES ---
+            ctx.strokeStyle = "#fff";
+            ctx.lineWidth = 2;
+            
+            // Y Axis
+            ctx.beginPath(); ctx.moveTo(pad, pad); ctx.lineTo(pad, h-pad); ctx.stroke();
+            // X Axis
+            ctx.beginPath(); ctx.moveTo(pad, h-pad); ctx.lineTo(w-pad, h-pad); ctx.stroke();
+
+            // --- LABELS ---
+            ctx.fillStyle = "#888";
+            ctx.font = "bold 10px sans-serif";
+            ctx.textAlign = "center";
+            
+            // X-Axis Labels
+            ctx.fillText("MANUAL / CHAOS", pad + 40, h-10);
+            ctx.fillText("STRUCTURED", w-pad-30, h-10);
+            
+            // Y-Axis Labels (Rotated)
+            ctx.save();
+            ctx.translate(15, h/2);
+            ctx.rotate(-Math.PI/2);
+            ctx.textAlign = "center";
+            ctx.fillText("LOW AGENT VALUE", 120, 0); // Bottom part
+            ctx.fillText("HIGH AGENT VALUE", -120, 0); // Top part
+            ctx.restore();
+
+            // --- QUADRANT TITLES (STATIC) ---
+            ctx.font = "bold 12px sans-serif";
+            
+            // Q2 Strategic
+            ctx.fillStyle = "#ffaa00";
+            ctx.fillText("STRATEGIC PROJECT", pad + chartW*0.25, pad + 30);
+            
+            // Q1 Quick Win
+            ctx.fillStyle = "#0aff60";
+            ctx.fillText("🚀 QUICK WIN", pad + chartW*0.75, pad + 30);
+            
+            // Q3 AI Not Useful
+            ctx.fillStyle = "#ff4444";
+            ctx.fillText("AI NOT USEFUL", pad + chartW*0.25, h - pad - 20);
+            
+            // Q4 Tech Toy
+            ctx.fillStyle = "#00f3ff";
+            ctx.fillText("TECH TOY", pad + chartW*0.75, h - pad - 20);
+
+            // --- THE DOT ---
+            // Calculate Position
+            // Tech Score (X): 1 = Left, 10 = Right
+            const normX = (techScore - 1) / 9; // Normalize 1..10 to 0..1
+            const targetX = pad + (normX * chartW);
+            
+            // ROI Score (Y): 1 = Bottom, 10 = Top
+            const normY = (roiScore - 1) / 9;
+            const targetY = (h - pad) - (normY * chartH);
+
+            // Radar Ripple Effect
+            ctx.beginPath();
+            ctx.arc(targetX, targetY, frame % 60, 0, Math.PI*2);
+            ctx.strokeStyle = `rgba(255, 255, 255, ${0.5 - (frame%60)/120})`;
+            ctx.stroke();
+
+            // Dot Core
+            ctx.beginPath();
+            ctx.arc(targetX, targetY, 8, 0, Math.PI*2);
+            ctx.fillStyle = "#fff";
+            ctx.fill();
+            
+            // Glow based on Verdict
+            ctx.shadowBlur = 25;
+            let glowColor = "#fff";
+            if (techScore >= 5 && roiScore >= 5) glowColor = "#0aff60";
+            else if (techScore < 5 && roiScore >= 5) glowColor = "#ffaa00";
+            else if (techScore >= 5 && roiScore < 5) glowColor = "#00f3ff";
+            else glowColor = "#ff4444";
+            ctx.shadowColor = glowColor;
+
+            // --- VERDICT LOGIC UPDATE (Once) ---
+            if (frame === 10) {
+                const titleEl = document.getElementById('verdict-title');
+                const descEl = document.getElementById('verdict-desc');
+                
+                titleEl.style.color = glowColor;
+
+                if (techScore >= 5 && roiScore >= 5) {
+                    titleEl.innerText = "VERDICT: QUICK WIN 🚀";
+                    descEl.innerText = "This process is a prime candidate for immediate Agent implementation.";
+                } 
+                else if (techScore < 5 && roiScore >= 5) {
+                    titleEl.innerText = "VERDICT: STRATEGIC PROJECT 🏗️";
+                    descEl.innerText = "High value, but data is still not AI-Ready.";
+                }
+                else if (techScore >= 5 && roiScore < 5) {
+                    titleEl.innerText = "VERDICT: TECH TOY 🧸";
+                    descEl.innerText = "Easy to do, but low business impact. Good for learning, bad for showing off ROI.";
+                }
+                else {
+                    titleEl.innerText = "VERDICT: AI NOT USEFUL ⛔";
+                    descEl.innerText = "Messy data and low value and/or critical process.";
+                }
+            }
+
+            frame++;
+            requestAnimationFrame(animate);
+        }
+        animate();
+    }
+
+    function sendEmail() {
+        const payload = {
+            id: scopeData.email,
+            scope: scopeData.type,
+            process_detail: scopeData.detail,
+            timestamp: new Date().toISOString(),
+            scores: {
+                raw: answers,
+                summary: "Calculated in Matrix"
+            }
+        };
+
+        const subject = `AI Audit Result: ${scopeData.email}`;
+        const body = `Please find below the result of the test.\n\n` +
+                     `JSON PAYLOAD:\n` + 
+                     JSON.stringify(payload, null, 4);
+
+        // "Daniel Rubio Paniagua" request
+        window.location.href = `mailto:daniel.rubio@example.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    }
+
+    // Init focus
+    window.onload = () => {
+        document.getElementById('userEmail').focus();
+    };
+
+</script>
+</body>
+</html>
