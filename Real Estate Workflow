@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RE Agentic Workflow // V3.0</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap');
+
+        :root {
+            --bg-dark: #0f172a;
+            --panel-bg: rgba(30, 41, 59, 0.7);
+            --accent-blue: #3b82f6;
+            --text-primary: #f1f5f9;
+            --border-color: rgba(148, 163, 184, 0.2);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            overflow: hidden;
+        }
+
+        .mono { font-family: 'JetBrains Mono', monospace; }
+
+        /* --- BACKGROUND MESH --- */
+        #network-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 2px 2px, rgba(56, 189, 248, 0.1) 1px, transparent 0);
+            background-size: 40px 40px;
+            background-color: #0b1120;
+        }
+
+        /* --- NODES --- */
+        .node {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .node-inner {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px; /* Squircle */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #1e293b;
+            border: 1px solid #475569;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .node:hover .node-inner {
+            transform: translateY(-2px) scale(1.05);
+            border-color: var(--accent-blue);
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+        }
+
+        .node.active .node-inner {
+            border-color: #38bdf8;
+            background: #0f172a;
+            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.3), 0 0 20px rgba(56, 189, 248, 0.2);
+        }
+
+        .node.active .node-inner::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; width: 100%; height: 2px;
+            background: #38bdf8;
+            animation: scan 2s infinite linear;
+        }
+
+        @keyframes scan { 0% { transform: translateY(-56px); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(0); opacity: 0; } }
+
+        /* Types */
+        .node.human .node-inner { border-radius: 50%; border-color: #be185d; }
+        .node.dept .node-inner { border-radius: 4px; border-color: #8b5cf6; width: 48px; height: 48px; } /* Core Depts */
+        .node.external .node-inner { border-style: dashed; border-color: #84cc16; }
+
+        .node-label {
+            position: absolute;
+            top: 65px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+            background: rgba(15, 23, 42, 0.9);
+            padding: 3px 8px;
+            border-radius: 4px;
+            pointer-events: none;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* --- CONNECTIONS --- */
+        svg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        path.connection {
+            fill: none;
+            stroke: #334155;
+            stroke-width: 1;
+            opacity: 0.2;
+            transition: all 0.5s;
+        }
+
+        path.connection.active {
+            stroke: #38bdf8;
+            stroke-width: 2;
+            opacity: 0.8;
+        }
+        
+        /* Dept Connections (Permanent) */
+        path.connection.dept-link {
+            stroke: #64748b;
+            stroke-width: 1;
+            stroke-dasharray: 4 4;
+            opacity: 0.4;
+        }
+
+        /* Packets */
+        .packet { fill: white; opacity: 0; }
+        .connection.active ~ .packet { opacity: 1; animation: flow 2s infinite linear; }
+        @keyframes flow { from { offset-distance: 0%; } to { offset-distance: 100%; } }
+
+        /* --- UI PANELS --- */
+        .glass-panel {
+            background: var(--panel-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+        }
+
+        .milestone-btn {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #94a3b8;
+            transition: all 0.2s;
+        }
+        .milestone-btn:hover { background: rgba(255,255,255,0.05); color: white; }
+        .milestone-btn.active {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: #3b82f6;
+            color: #fff;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+        }
+
+        .card-detail {
+            animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 2px; }
+
+        .tag {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-right: 4px;
+            margin-bottom: 4px;
+        }
+        .tag-tech { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .tag-cap { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+    </style>
+</head>
+<body class="flex h-screen flex-col text-sm">
+
+    <!-- Header -->
+    <header class="h-16 glass-panel border-b border-slate-700/50 flex items-center justify-between px-6 z-50 shrink-0">
+        <div class="flex items-center gap-4">
+            <div class="w-8 h-8 rounded bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
+                <i class="fa-solid fa-network-wired"></i>
+            </div>
+            <div>
+                <h1 class="text-base font-bold tracking-wide text-white uppercase">RE Agentic Workflow</h1>
+                <p class="text-[10px] text-slate-400 tracking-wider">Project Horizon // Operational View</p>
+            </div>
+        </div>
+        
+        <div class="flex gap-2">
+            <button onclick="setMilestone(1)" id="btn-m1" class="milestone-btn px-4 py-2 rounded text-[10px] font-bold uppercase tracking-wider">
+                01. Strategy & Lease
+            </button>
+            <button onclick="setMilestone(2)" id="btn-m2" class="milestone-btn px-4 py-2 rounded text-[10px] font-bold uppercase tracking-wider">
+                02. Design & Approve
+            </button>
+            <button onclick="setMilestone(3)" id="btn-m3" class="milestone-btn px-4 py-2 rounded text-[10px] font-bold uppercase tracking-wider">
+                03. Build & Spend
+            </button>
+            <button onclick="setMilestone(4)" id="btn-m4" class="milestone-btn px-4 py-2 rounded text-[10px] font-bold uppercase tracking-wider">
+                04. Go Live
+            </button>
+        </div>
+
+        <div class="text-[10px] text-slate-500 font-mono">
+            SYS: <span class="text-green-400">ONLINE</span>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="flex flex-1 overflow-hidden relative">
+        
+        <!-- Network Map -->
+        <main class="flex-1 relative" id="network-container">
+            <svg id="connections-layer"></svg>
+            <div id="nodes-layer"></div>
+            
+            <!-- Legend -->
+            <div class="absolute bottom-6 left-6 glass-panel p-3 rounded-lg border border-slate-700/50 z-20">
+                <div class="text-[9px] font-bold text-slate-500 uppercase mb-2 tracking-widest">Node Types</div>
+                <div class="flex flex-col gap-1.5">
+                    <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full border border-pink-500 bg-pink-500/20"></div> 
+                        <span class="text-[10px] text-slate-300">Human Lead (WX)</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 rounded bg-sky-500 shadow-[0_0_5px_rgba(14,165,233,0.5)]"></div> 
+                        <span class="text-[10px] text-slate-300">Operational Agent (RE)</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 rounded bg-violet-600/50 border border-violet-500"></div> 
+                        <span class="text-[10px] text-slate-300">Core Dept Agent (Finance/Legal/HR)</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Sidebar: Agent Specs -->
+        <aside class="w-[450px] glass-panel border-l border-slate-700/50 flex flex-col z-40 shadow-2xl">
+            
+            <!-- Empty State -->
+            <div id="empty-state" class="flex-1 flex flex-col items-center justify-center text-slate-500 p-10 text-center">
+                <i class="fa-solid fa-diagram-project text-4xl mb-4 opacity-30"></i>
+                <h3 class="text-sm font-bold text-slate-300 uppercase tracking-widest mb-2">Workflow Inspector</h3>
+                <p class="text-xs max-w-xs leading-relaxed">Select a node in the network to inspect the Agent's architecture, data inputs, and downstream connections.</p>
+            </div>
+
+            <!-- Detail Content (Hidden by default) -->
+            <div id="agent-detail" class="hidden flex-1 flex-col h-full card-detail">
+                
+                <!-- Header -->
+                <div class="p-6 border-b border-slate-700/50 bg-slate-800/50">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="w-12 h-12 rounded-lg bg-slate-700 flex items-center justify-center text-2xl text-blue-400 border border-slate-600" id="detail-icon">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <span class="text-[10px] font-mono text-slate-500 bg-slate-900 px-2 py-1 rounded border border-slate-800" id="detail-id">AGENT_ID_01</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white mb-1" id="detail-title">Agent Name</h2>
+                    <p class="text-xs text-blue-300 font-medium uppercase tracking-wide" id="detail-role">Role Description</p>
+                </div>
+
+                <!-- Scrollable Body -->
+                <div class="flex-1 overflow-y-auto p-6 space-y-6">
+                    
+                    <!-- Description -->
+                    <div>
+                        <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Functional Overview</h4>
+                        <p class="text-sm text-slate-300 leading-relaxed" id="detail-desc">
+                            Detailed description of what this agent does in the context of corporate real estate.
+                        </p>
+                    </div>
+
+                    <!-- Tech Stack -->
+                    <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-800">
+                        <h4 class="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-microchip"></i> AI Architecture
+                        </h4>
+                        <p class="text-xs text-slate-400 mb-3 font-mono" id="detail-tech-desc">
+                            Explanation of the technology.
+                        </p>
+                        <div id="detail-tags" class="flex flex-wrap"></div>
+                    </div>
+
+                    <!-- Connectivity -->
+                    <div>
+                        <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Workflow Integration</h4>
+                        <div class="space-y-2">
+                            <div class="flex items-start gap-3">
+                                <div class="mt-1 w-1.5 h-1.5 rounded-full bg-green-500"></div>
+                                <div>
+                                    <span class="text-[10px] text-slate-400 uppercase font-bold">Input Data</span>
+                                    <p class="text-xs text-slate-300" id="detail-inputs">Data sources...</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="mt-1 w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+                                <div>
+                                    <span class="text-[10px] text-slate-400 uppercase font-bold">Outputs / Hand-offs</span>
+                                    <p class="text-xs text-slate-300" id="detail-outputs">Deliverables...</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="mt-1 w-1.5 h-1.5 rounded-full bg-purple-500"></div>
+                                <div>
+                                    <span class="text-[10px] text-slate-400 uppercase font-bold">Connected Dept</span>
+                                    <p class="text-xs text-slate-300" id="detail-dept">Department...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Log -->
+                <div class="p-3 bg-black/20 border-t border-slate-800 text-[10px] font-mono text-slate-500">
+                    LAST_ACTIVE: <span id="detail-status" class="text-green-400">PROCESSING</span>
+                </div>
+
+            </div>
+        </aside>
+
+    </div>
+
+    <script>
+        // --- DATA MODEL ---
+
+        const agents = [
+            // HUMANS
+            { 
+                id: 'wx', label: 'WX Lead', type: 'human', icon: 'fa-user-tie', x: 50, y: 50,
+                role: 'Strategic Orchestrator',
+                desc: 'The Workplace Experience Manager acts as the "Human in the Loop" for strategic approvals. Instead of managing tasks, they manage exceptions and final sign-offs for high-impact decisions (Budget >$10k, Lease Signing, Design Look & Feel).',
+                techDesc: 'Dashboard-based Decision Support System. Uses predictive analytics to highlight risks requiring human empathy or political judgment.',
+                tags: ['Strategy', 'Approvals', 'Stakeholder Mgmt'],
+                inputs: 'Business Case Options, Design Renders, Budget Alerts',
+                outputs: 'Go/No-Go Decisions, Signed Approvals',
+                dept: 'Real Estate / WX'
+            },
+
+            // CORE DEPARTMENTS (The "Backbone")
+            { 
+                id: 'legal_core', label: 'Legal Dept', type: 'dept', icon: 'fa-scale-balanced', x: 85, y: 35,
+                role: 'Corporate Risk Oversight',
+                desc: 'Represents the centralized Legal Department. This node sets the "Playbook" (risk tolerance, standard clauses) that the specialized RE agents must follow. It handles escalations that the AI agents cannot resolve.',
+                techDesc: 'Enterprise Legal Management (ELM) System integration.',
+                tags: ['Risk Policy', 'Escalation'],
+                inputs: 'Non-standard Lease Clauses, Liability Issues',
+                outputs: 'Approved Legal Language, Risk Waivers',
+                dept: 'Legal'
+            },
+            { 
+                id: 'fin_core', label: 'Finance', type: 'dept', icon: 'fa-building-columns', x: 85, y: 85,
+                role: 'Treasury & Corporate Finance',
+                desc: 'The centralized Finance function. Responsible for releasing actual funds (Wire Transfers) and validating the overall Business Case against company P&L. It connects to the operational RE agents to keep the books balanced.',
+                techDesc: 'ERP Integration (SAP/Oracle). Automates ledger entries based on validated data from RE agents.',
+                tags: ['Treasury', 'GL Accounting'],
+                inputs: 'Validated Invoices, Business Case Forecasts',
+                outputs: 'Wire Transfers, Budget Allocation',
+                dept: 'Finance'
+            },
+            { 
+                id: 'pnc_core', label: 'P&C / HR', type: 'dept', icon: 'fa-users', x: 85, y: 60,
+                role: 'People & Culture',
+                desc: 'The HR department node. Responsible for Change Management policies, Return-to-Office mandates, and employee wellbeing standards. It consumes sentiment data to adjust corporate policies.',
+                techDesc: 'HRIS Integration (Workday/BambooHR).',
+                tags: ['Wellbeing', 'Policy'],
+                inputs: 'Employee Sentiment Trends, Occupancy Data',
+                outputs: 'Change Mgmt Comms, RTO Policy',
+                dept: 'HR'
+            },
+
+            // MILESTONE 1: STRATEGY
+            { 
+                id: 'scout', label: 'Scout', type: 'internal', icon: 'fa-binoculars', x: 20, y: 35,
+                role: 'Market Intelligence Agent',
+                desc: 'Scrapes real estate listings and merges them with employee home zip-codes to calculate commute times. It filters "Market Rent" vs "Net Effective Rent" to find true value.',
+                techDesc: 'Geo-Spatial APIs + Web Scraping. Uses Python libraries to fetch listings and Google Distance Matrix API for commute analysis.',
+                tags: ['Scraping', 'Geo-Spatial', 'Data Merging'],
+                inputs: 'Search Radius, Budget Cap, Employee Addresses',
+                outputs: 'Shortlist of 3 Buildings with Commute Impact Score',
+                dept: 'Real Estate'
+            },
+            { 
+                id: 'lease_ai', label: 'Lease AI', type: 'internal', icon: 'fa-file-contract', x: 50, y: 20,
+                role: 'Lease Abstraction & Review',
+                desc: 'Reads PDF Leases from landlords. It compares clauses (TI Allowance, Restoration Obligations, Holdover) against the Legal Dept\'s "Standard Playbook". Deviations are flagged.',
+                techDesc: 'Natural Language Processing (NLP) / BERT Models. Trained on thousands of commercial leases to understand legal semantic nuance.',
+                tags: ['NLP', 'Risk Detection', 'Redlining'],
+                inputs: 'Draft Lease (PDF)',
+                outputs: 'Redlined Document, Risk Summary Report',
+                dept: 'Real Estate (linked to Legal)'
+            },
+
+            // MILESTONE 2: DESIGN
+            { 
+                id: 'architect', label: 'Gen Design', type: 'external', icon: 'fa-pen-ruler', x: 35, y: 60,
+                role: 'Generative Space Planner',
+                desc: 'An external SaaS agent. Takes the floorplan (CAD) and headcount requirements to generate thousands of "Test Fits". Optimizes for Adjacency Ratios (who sits next to whom) and Natural Light.',
+                techDesc: 'Generative Design Algorithms (GANs). Iterates geometry to maximize defined KPIs (e.g., "70% collaboration space").',
+                tags: ['Generative Design', 'CAD Automation'],
+                inputs: 'Floorplan .DWG, Headcount, Work Patterns',
+                outputs: 'Optimized Layout Options (2D/3D)',
+                dept: 'External Partner'
+            },
+            { 
+                id: 'code_bot', label: 'Code Bot', type: 'internal', icon: 'fa-shield-halved', x: 60, y: 70,
+                role: 'Compliance Guardian',
+                desc: 'Audits layout files against local Building Codes (Fire Egress width, ADA accessibility, Bathroom counts). Ensures the "cool design" is actually legal to build.',
+                techDesc: 'Rules Engine & Computer Vision. Measures distances in vector files and compares against a database of local municipal codes.',
+                tags: ['Rule Engine', 'Audit'],
+                inputs: 'Proposed Layouts',
+                outputs: 'Pass/Fail Report, Violation Markers',
+                dept: 'Real Estate'
+            },
+
+            // MILESTONE 3: BUILD
+            { 
+                id: 'rfp_ai', label: 'RFP Agent', type: 'internal', icon: 'fa-list-check', x: 25, y: 80,
+                role: 'Procurement Orchestrator',
+                desc: 'Manages the tender process for Design & Build. Sends bid packages to pre-qualified vendors, answers RFIs (Requests for Info) automatically using project docs, and normalizes bid spreadsheets for "Apples-to-Apples" comparison.',
+                techDesc: 'LLM for text generation (RFIs) + Structured Data Parsers for bid leveling (Excel extraction).',
+                tags: ['Bid Leveling', 'Automation'],
+                inputs: 'Construction Drawings, Vendor List',
+                outputs: 'Bid Comparison Matrix, Contract Draft',
+                dept: 'Procurement / RE'
+            },
+            { 
+                id: 'capex', label: 'Capex Bot', type: 'internal', icon: 'fa-magnifying-glass-dollar', x: 55, y: 90,
+                role: 'Construction Watchdog',
+                desc: 'The operational spend monitor. Reads Pay Applications (AIA G702/G703) and Invoices. Verifies work completion % against the schedule and checks for Lien Waivers before authorizing Finance to pay.',
+                techDesc: 'OCR (Optical Character Recognition) for invoice reading + Anomaly Detection models to spot scope creep or duplicate billing.',
+                tags: ['OCR', 'Fraud Detection', 'Cost Control'],
+                inputs: 'Invoices, Change Orders, Pay Apps',
+                outputs: 'Payment Certificate (to Finance)',
+                dept: 'Project Mgmt'
+            },
+            { 
+                id: 'db_legal', label: 'D&B Contract', type: 'internal', icon: 'fa-file-signature', x: 65, y: 80,
+                role: 'Construction Contract AI',
+                desc: 'Drafts the AIA Contracts for the General Contractor. Ensures scope of work aligns with the RFP and that Insurance Certificates (COI) are valid.',
+                techDesc: 'Contract Lifecycle Mgmt (CLM). Automation of standard template filling and version control.',
+                tags: ['Contract Assembly', 'Compliance'],
+                inputs: 'Winning Bid, Insurance Docs',
+                outputs: 'Execution-ready Contract',
+                dept: 'Real Estate (linked to Legal)'
+            },
+
+            // MILESTONE 4: LIVE
+            { 
+                id: 'concierge', label: 'Concierge', type: 'internal', icon: 'fa-bell-concierge', x: 25, y: 20,
+                role: 'Employee Experience Bot',
+                desc: 'A chatbot living in MS Teams/Slack. Helps employees find desks, book lockers, and understand new office etiquette. It personalizes the "Welcome Guide" for each user.',
+                techDesc: 'Conversational AI (LLM). Fine-tuned on the "Office User Manual" and Floorplans.',
+                tags: ['Chatbot', 'Wayfinding', 'Personalization'],
+                inputs: 'User Questions, Booking Requests',
+                outputs: 'Answers, Desk Reservations',
+                dept: 'WX'
+            },
+            { 
+                id: 'pulse', label: 'Pulse', type: 'internal', icon: 'fa-heart-pulse', x: 60, y: 45,
+                role: 'Sentiment Analyzer',
+                desc: 'Listens to digital feedback channels (surveys, public slack channels) to detect friction points (e.g., "The WiFi is bad in the Hub"). Aggregates data for HR and WX.',
+                techDesc: 'Sentiment Analysis & Topic Modeling. Groups thousands of messages into actionable clusters ("Comfort", "Tech", "Noise").',
+                tags: ['Sentiment Analysis', 'Data Aggregation'],
+                inputs: 'Survey Data, Public Chat Logs',
+                outputs: 'Heatmaps, Alerts to P&C',
+                dept: 'WX / HR'
+            }
+        ];
+
+        const connections = [
+            // M1 Strategy
+            { from: 'wx', to: 'scout', m: [1] },
+            { from: 'scout', to: 'fin_core', m: [1] }, // Data for Business Case
+            { from: 'fin_core', to: 'wx', m: [1] }, // Budget Approval
+            { from: 'lease_ai', to: 'legal_core', m: [1], type: 'dept' }, // Escalation
+            { from: 'lease_ai', to: 'wx', m: [1] },
+            
+            // M2 Design
+            { from: 'wx', to: 'architect', m: [2] },
+            { from: 'architect', to: 'code_bot', m: [2] },
+            { from: 'code_bot', to: 'architect', m: [2] }, // Loop
+            { from: 'code_bot', to: 'wx', m: [2] },
+
+            // M3 Build
+            { from: 'wx', to: 'rfp_ai', m: [3] },
+            { from: 'rfp_ai', to: 'db_legal', m: [3] },
+            { from: 'db_legal', to: 'legal_core', m: [3], type: 'dept' },
+            { from: 'db_legal', to: 'capex', m: [3] }, // Contract data to Watchdog
+            { from: 'capex', to: 'fin_core', m: [3], type: 'dept' }, // Validated Payment Request
+            
+            // M4 Live
+            { from: 'wx', to: 'concierge', m: [4] },
+            { from: 'pulse', to: 'wx', m: [4] },
+            { from: 'pulse', to: 'pnc_core', m: [4], type: 'dept' } // HR Insight
+        ];
+
+        // --- RENDER LOGIC ---
+
+        function init() {
+            renderNodes();
+            renderConnections();
+            setMilestone(1);
+        }
+
+        function renderNodes() {
+            const container = document.getElementById('nodes-layer');
+            container.innerHTML = '';
+            
+            agents.forEach(a => {
+                const node = document.createElement('div');
+                node.className = `node ${a.type}`;
+                node.id = `node-${a.id}`;
+                node.style.left = `${a.x}%`;
+                node.style.top = `${a.y}%`;
+                node.onclick = () => selectAgent(a);
+                
+                node.innerHTML = `
+                    <div class="node-inner">
+                        <i class="fa-solid ${a.icon} text-slate-300 text-xl"></i>
+                    </div>
+                    <div class="node-label">${a.label}</div>
+                `;
+                container.appendChild(node);
+            });
+        }
+
+        function renderConnections() {
+            const svg = document.getElementById('connections-layer');
+            svg.innerHTML = '';
+            const rect = document.getElementById('network-container').getBoundingClientRect();
+            
+            connections.forEach((c, i) => {
+                const start = agents.find(a => a.id === c.from);
+                const end = agents.find(a => a.id === c.to);
+                
+                const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                
+                path.setAttribute("id", `conn-${i}`);
+                path.setAttribute("class", `connection ${c.type === 'dept' ? 'dept-link' : ''}`);
+                
+                // Calculate Coords
+                const x1 = (start.x / 100) * rect.width;
+                const y1 = (start.y / 100) * rect.height;
+                const x2 = (end.x / 100) * rect.width;
+                const y2 = (end.y / 100) * rect.height;
+                
+                path.setAttribute("d", `M ${x1} ${y1} L ${x2} ${y2}`);
+                
+                // Packet
+                const packet = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                packet.setAttribute("r", "2");
+                packet.setAttribute("class", "packet");
+                packet.setAttribute("id", `pack-${i}`);
+                
+                const mpath = document.createElementNS("http://www.w3.org/2000/svg", "animateMotion");
+                mpath.setAttribute("dur", "2s");
+                mpath.setAttribute("repeatCount", "indefinite");
+                mpath.setAttribute("path", `M ${x1} ${y1} L ${x2} ${y2}`);
+                
+                packet.appendChild(mpath);
+                group.appendChild(path);
+                if(c.type !== 'dept') group.appendChild(packet); // Only flow packets on active workflow lines
+                
+                svg.appendChild(group);
+            });
+        }
+
+        let currentMilestone = 1;
+
+        function setMilestone(m) {
+            currentMilestone = m;
+            
+            // Buttons
+            document.querySelectorAll('.milestone-btn').forEach((b, i) => {
+                if(i+1 === m) b.classList.add('active');
+                else b.classList.remove('active');
+            });
+
+            // Active State Logic
+            const activeIds = new Set();
+            const activeConnIdx = new Set();
+
+            connections.forEach((c, i) => {
+                if (c.m.includes(m)) {
+                    activeIds.add(c.from);
+                    activeIds.add(c.to);
+                    activeConnIdx.add(i);
+                }
+            });
+
+            // Update Nodes
+            agents.forEach(a => {
+                const el = document.getElementById(`node-${a.id}`);
+                if (activeIds.has(a.id)) el.classList.add('active');
+                else el.classList.remove('active');
+            });
+
+            // Update Lines
+            connections.forEach((c, i) => {
+                const line = document.getElementById(`conn-${i}`);
+                const pack = document.getElementById(`pack-${i}`);
+                
+                if (activeConnIdx.has(i)) {
+                    line.classList.add('active');
+                    if(pack) pack.style.display = 'block';
+                } else {
+                    line.classList.remove('active');
+                    if(pack) pack.style.display = 'none';
+                }
+            });
+        }
+
+        function selectAgent(a) {
+            document.getElementById('empty-state').classList.add('hidden');
+            document.getElementById('agent-detail').classList.remove('hidden');
+            
+            // Populate Data
+            document.getElementById('detail-id').innerText = `ID: ${a.id.toUpperCase()}`;
+            document.getElementById('detail-title').innerText = a.label;
+            document.getElementById('detail-role').innerText = a.role;
+            document.getElementById('detail-desc').innerText = a.desc;
+            document.getElementById('detail-tech-desc').innerText = a.techDesc;
+            document.getElementById('detail-inputs').innerText = a.inputs;
+            document.getElementById('detail-outputs').innerText = a.outputs;
+            document.getElementById('detail-dept').innerText = a.dept;
+            
+            // Icon
+            document.getElementById('detail-icon').innerHTML = `<i class="fa-solid ${a.icon}"></i>`;
+            
+            // Tags
+            const tagContainer = document.getElementById('detail-tags');
+            tagContainer.innerHTML = '';
+            a.tags.forEach(t => {
+                const tag = document.createElement('span');
+                tag.className = 'tag tag-tech';
+                tag.innerText = t;
+                tagContainer.appendChild(tag);
+            });
+        }
+
+        // Resize Handler
+        window.onresize = () => renderConnections();
+
+        // Boot
+        init();
+
+    </script>
+</body>
+</html>
