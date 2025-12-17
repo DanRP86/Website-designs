@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RE Agentic Workflow // V3.1</title>
+    <title>RE Agentic Workflow // V3.2</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <style>
@@ -238,15 +238,15 @@
                 <div class="flex flex-col gap-1.5">
                     <div class="flex items-center gap-2">
                         <div class="w-2 h-2 rounded-full border border-pink-500 bg-pink-500/20"></div> 
-                        <span class="text-[10px] text-slate-300">Human Lead (WX)</span>
+                        <span class="text-[10px] text-slate-300">Human Lead (RE & WX)</span>
                     </div>
                     <div class="flex items-center gap-2">
                         <div class="w-2 h-2 rounded bg-sky-500 shadow-[0_0_5px_rgba(14,165,233,0.5)]"></div> 
-                        <span class="text-[10px] text-slate-300">Operational Agent (RE)</span>
+                        <span class="text-[10px] text-slate-300">Operational Agent</span>
                     </div>
                     <div class="flex items-center gap-2">
                         <div class="w-2 h-2 rounded bg-violet-600/50 border border-violet-500"></div> 
-                        <span class="text-[10px] text-slate-300">Core Dept Agent (Finance/Legal/HR)</span>
+                        <span class="text-[10px] text-slate-300">Core Dept Agent</span>
                     </div>
                 </div>
             </div>
@@ -342,11 +342,11 @@
         // --- DATA MODEL ---
 
         const agents = [
-            // HUMANS
+            // CENTER
             { 
-                id: 'wx', label: 'WX Lead', type: 'human', icon: 'fa-user-tie', x: 50, y: 50,
+                id: 'wx', label: 'RE & WX Manager', type: 'human', icon: 'fa-user-tie', x: 50, y: 50,
                 role: 'Strategic Orchestrator',
-                desc: 'The Workplace Experience Manager acts as the "Human in the Loop". They don't talk directly to Finance/HR departments for routine approvals. They design the outcome and review the Business Case built by their RE Agents.',
+                desc: 'The Real Estate & Workplace Experience Manager. Acts as the "Human in the Loop" for strategic approvals. Instead of managing tasks, they manage exceptions and final sign-offs for high-impact decisions (Budget >$10k, Lease Signing, Design Look & Feel).',
                 techDesc: 'Dashboard-based Decision Support System. Uses predictive analytics to highlight risks requiring human empathy or political judgment.',
                 tags: ['Strategy', 'Approvals', 'Stakeholder Mgmt'],
                 inputs: 'Completed Business Case (from RE Analyst), Layouts (from Architect)',
@@ -354,11 +354,11 @@
                 dept: 'Real Estate / WX'
             },
 
-            // CORE DEPARTMENTS (The "Backbone")
+            // CORE DEPARTMENTS (RIGHT COLUMN)
             { 
-                id: 'legal_core', label: 'Legal Dept', type: 'dept', icon: 'fa-scale-balanced', x: 85, y: 35,
+                id: 'legal_core', label: 'Legal Dept', type: 'dept', icon: 'fa-scale-balanced', x: 92, y: 20,
                 role: 'Corporate Risk Oversight',
-                desc: 'Represents the centralized Legal Department. Sets the "Playbook" and handles escalations. Interacts only with specialized Legal Agents, not the WX Lead.',
+                desc: 'Represents the centralized Legal Department. Sets the "Playbook" and handles escalations.',
                 techDesc: 'Enterprise Legal Management (ELM) System.',
                 tags: ['Risk Policy', 'Escalation'],
                 inputs: 'Lease Escalations',
@@ -366,31 +366,31 @@
                 dept: 'Legal'
             },
             { 
-                id: 'fin_core', label: 'Finance', type: 'dept', icon: 'fa-building-columns', x: 85, y: 85,
-                role: 'Treasury & Corporate Finance',
-                desc: 'The centralized Finance function. Validates funding against company P&L. It DOES NOT talk to the WX Lead directly. It validates data coming from the RE Financial Analyst.',
-                techDesc: 'ERP Integration (SAP/Oracle).',
-                tags: ['Treasury', 'GL Accounting'],
-                inputs: 'Business Case Funding Request',
-                outputs: 'Budget Allocation Code',
-                dept: 'Finance'
-            },
-            { 
-                id: 'pnc_core', label: 'P&C / HR', type: 'dept', icon: 'fa-users', x: 85, y: 60,
+                id: 'pnc_core', label: 'P&C / HR', type: 'dept', icon: 'fa-users', x: 92, y: 50,
                 role: 'People & Culture',
-                desc: 'HR Department. Consumes sentiment data from the Pulse Agent to adjust corporate policies.',
+                desc: 'HR Department. Consumes sentiment data from Pulse to adjust policies.',
                 techDesc: 'HRIS Integration.',
                 tags: ['Wellbeing', 'Policy'],
                 inputs: 'Employee Sentiment Trends',
                 outputs: 'Change Mgmt Comms',
                 dept: 'HR'
             },
-
-            // MILESTONE 1: STRATEGY
             { 
-                id: 'scout', label: 'Scout', type: 'internal', icon: 'fa-binoculars', x: 20, y: 35,
+                id: 'fin_core', label: 'Finance', type: 'dept', icon: 'fa-building-columns', x: 92, y: 80,
+                role: 'Treasury & Corporate Finance',
+                desc: 'The centralized Finance function. Validates funding against company P&L.',
+                techDesc: 'ERP Integration (SAP/Oracle).',
+                tags: ['Treasury', 'GL Accounting'],
+                inputs: 'Business Case Funding Request',
+                outputs: 'Budget Allocation Code',
+                dept: 'Finance'
+            },
+
+            // MILESTONE 1: STRATEGY (TOP LEFT)
+            { 
+                id: 'scout', label: 'Scout', type: 'internal', icon: 'fa-binoculars', x: 10, y: 15,
                 role: 'Market Intelligence Agent',
-                desc: 'Scrapes listings. It passes raw data (rents, location) to the RE Analyst, NOT to Finance directly.',
+                desc: 'Scrapes listings. Passes raw data to RE Analyst.',
                 techDesc: 'Geo-Spatial APIs + Web Scraping.',
                 tags: ['Scraping', 'Geo-Spatial'],
                 inputs: 'Search Radius, Budget Cap',
@@ -398,19 +398,19 @@
                 dept: 'Real Estate'
             },
             { 
-                id: 'fin_analyst', label: 'RE Analyst', type: 'internal', icon: 'fa-chart-line', x: 20, y: 65,
+                id: 'fin_analyst', label: 'RE Analyst', type: 'internal', icon: 'fa-chart-line', x: 25, y: 25,
                 role: 'Business Case Owner',
-                desc: 'The Specialized RE Financial Agent. It aggregates data from Scout (Rent) and Architect (Fit-out Cost) to build the full Business Case (NPV, Cash Flow). IT IS THE BRIDGE to Corporate Finance.',
-                techDesc: 'Financial Modeling Engine. Auto-generates Excel/JSON models for ERP ingestion.',
+                desc: 'Builds Business Case. Aggregates Scout data and Fit-out estimates. Connects to Corporate Finance.',
+                techDesc: 'Financial Modeling Engine.',
                 tags: ['Modeling', 'Bridge to Finance'],
-                inputs: 'Market Data (Scout), Fit-out Estimates',
-                outputs: 'Validated Business Case (to WX), Funding Request (to Fin Core)',
+                inputs: 'Market Data, Fit-out Estimates',
+                outputs: 'Validated Business Case',
                 dept: 'Real Estate'
             },
             { 
-                id: 'lease_ai', label: 'Lease AI', type: 'internal', icon: 'fa-file-contract', x: 50, y: 20,
+                id: 'lease_ai', label: 'Lease AI', type: 'internal', icon: 'fa-file-contract', x: 35, y: 10,
                 role: 'Lease Abstraction',
-                desc: 'Reads PDF Leases. Connects with Legal Dept for playbooks.',
+                desc: 'Reads PDF Leases. Connects with Legal Dept.',
                 techDesc: 'NLP / BERT Models.',
                 tags: ['NLP', 'Redlining'],
                 inputs: 'Draft Lease (PDF)',
@@ -418,9 +418,9 @@
                 dept: 'Real Estate'
             },
 
-            // MILESTONE 2: DESIGN
+            // MILESTONE 2: DESIGN (TOP RIGHT)
             { 
-                id: 'architect', label: 'Gen Design', type: 'external', icon: 'fa-pen-ruler', x: 35, y: 60,
+                id: 'architect', label: 'Gen Design', type: 'external', icon: 'fa-pen-ruler', x: 65, y: 15,
                 role: 'Generative Space Planner',
                 desc: 'External SaaS. Generates layouts.',
                 techDesc: 'Generative Design Algorithms (GANs).',
@@ -430,7 +430,7 @@
                 dept: 'External Partner'
             },
             { 
-                id: 'code_bot', label: 'Code Bot', type: 'internal', icon: 'fa-shield-halved', x: 60, y: 70,
+                id: 'code_bot', label: 'Code Bot', type: 'internal', icon: 'fa-shield-halved', x: 80, y: 25,
                 role: 'Compliance Guardian',
                 desc: 'Audits layouts against code.',
                 techDesc: 'Rules Engine & Computer Vision.',
@@ -440,9 +440,9 @@
                 dept: 'Real Estate'
             },
 
-            // MILESTONE 3: BUILD
+            // MILESTONE 3: BUILD (BOTTOM LEFT)
             { 
-                id: 'rfp_ai', label: 'RFP Agent', type: 'internal', icon: 'fa-list-check', x: 25, y: 80,
+                id: 'rfp_ai', label: 'RFP Agent', type: 'internal', icon: 'fa-list-check', x: 10, y: 75,
                 role: 'Procurement Orchestrator',
                 desc: 'Manages tenders.',
                 techDesc: 'LLM for text generation.',
@@ -452,17 +452,17 @@
                 dept: 'Procurement / RE'
             },
             { 
-                id: 'capex', label: 'Capex Bot', type: 'internal', icon: 'fa-magnifying-glass-dollar', x: 55, y: 90,
+                id: 'capex', label: 'Capex Bot', type: 'internal', icon: 'fa-magnifying-glass-dollar', x: 40, y: 75,
                 role: 'Construction Watchdog',
-                desc: 'Operational spend monitor. Validates invoices against progress. Connects to Finance Core for payment.',
+                desc: 'Operational spend monitor. Validates invoices. Connects to Finance.',
                 techDesc: 'OCR + Anomaly Detection.',
                 tags: ['OCR', 'Cost Control'],
                 inputs: 'Invoices',
-                outputs: 'Payment Certificate (to Fin Core)',
+                outputs: 'Payment Certificate',
                 dept: 'Project Mgmt'
             },
             { 
-                id: 'db_legal', label: 'D&B Contract', type: 'internal', icon: 'fa-file-signature', x: 65, y: 80,
+                id: 'db_legal', label: 'D&B Contract', type: 'internal', icon: 'fa-file-signature', x: 25, y: 85,
                 role: 'Construction Contract AI',
                 desc: 'Drafts AIA Contracts. Connects to Legal Core.',
                 techDesc: 'Contract Lifecycle Mgmt (CLM).',
@@ -472,9 +472,9 @@
                 dept: 'Real Estate'
             },
 
-            // MILESTONE 4: LIVE
+            // MILESTONE 4: LIVE (BOTTOM RIGHT)
             { 
-                id: 'concierge', label: 'Concierge', type: 'internal', icon: 'fa-bell-concierge', x: 25, y: 20,
+                id: 'concierge', label: 'Concierge', type: 'internal', icon: 'fa-bell-concierge', x: 65, y: 80,
                 role: 'Employee Experience Bot',
                 desc: 'Chatbot for employees.',
                 techDesc: 'Conversational AI (LLM).',
@@ -484,7 +484,7 @@
                 dept: 'WX'
             },
             { 
-                id: 'pulse', label: 'Pulse', type: 'internal', icon: 'fa-heart-pulse', x: 60, y: 45,
+                id: 'pulse', label: 'Pulse', type: 'internal', icon: 'fa-heart-pulse', x: 80, y: 70,
                 role: 'Sentiment Analyzer',
                 desc: 'Listens to feedback. Connects to HR Core.',
                 techDesc: 'Sentiment Analysis.',
@@ -496,30 +496,30 @@
         ];
 
         const connections = [
-            // M1 Strategy (NEW FLOW)
+            // M1 Strategy (TOP LEFT)
             { from: 'wx', to: 'scout', m: [1] },
-            { from: 'scout', to: 'fin_analyst', m: [1] }, // 1. Scout passes data to Analyst
-            { from: 'fin_analyst', to: 'fin_core', m: [1], type: 'dept' }, // 2. Analyst validates with Core
-            { from: 'fin_core', to: 'fin_analyst', m: [1], type: 'dept' }, // 3. Core approves
-            { from: 'fin_analyst', to: 'wx', m: [1] }, // 4. Analyst presents Case to Lead
+            { from: 'scout', to: 'fin_analyst', m: [1] }, 
+            { from: 'fin_analyst', to: 'fin_core', m: [1], type: 'dept' },
+            { from: 'fin_core', to: 'fin_analyst', m: [1], type: 'dept' },
+            { from: 'fin_analyst', to: 'wx', m: [1] },
             
             { from: 'wx', to: 'lease_ai', m: [1] },
             { from: 'lease_ai', to: 'legal_core', m: [1], type: 'dept' },
 
-            // M2 Design
+            // M2 Design (TOP RIGHT)
             { from: 'wx', to: 'architect', m: [2] },
             { from: 'architect', to: 'code_bot', m: [2] },
             { from: 'code_bot', to: 'architect', m: [2] }, 
             { from: 'code_bot', to: 'wx', m: [2] },
 
-            // M3 Build
+            // M3 Build (BOTTOM LEFT)
             { from: 'wx', to: 'rfp_ai', m: [3] },
             { from: 'rfp_ai', to: 'db_legal', m: [3] },
             { from: 'db_legal', to: 'legal_core', m: [3], type: 'dept' },
             { from: 'db_legal', to: 'capex', m: [3] }, 
             { from: 'capex', to: 'fin_core', m: [3], type: 'dept' }, 
             
-            // M4 Live
+            // M4 Live (BOTTOM RIGHT)
             { from: 'wx', to: 'concierge', m: [4] },
             { from: 'pulse', to: 'wx', m: [4] },
             { from: 'pulse', to: 'pnc_core', m: [4], type: 'dept' } 
