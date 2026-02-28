@@ -1,0 +1,233 @@
+import React, { useState } from 'react';
+import { 
+  ChevronDown, 
+  ChevronUp, 
+  Calendar, 
+  Cpu, 
+  Users, 
+  GlassWater, 
+  TrendingUp, 
+  ShieldCheck,
+  ArrowRight,
+  Clock
+} from 'lucide-react';
+
+const App = () => {
+  const [activeFaq, setActiveFaq] = useState(null);
+
+  const faqs = [
+    {
+      q: "¿Por qué el 10%?",
+      a: "Porque creemos que un profesional con 15-20 años de experiencia puede aportar más valor en 4 horas a la semana que un perfil junior en 40. Es el porcentaje de tiempo ideal para mantener tus proyectos activos mientras construyes tu próximo gran activo."
+    },
+    {
+      q: "¿Qué perfil de socios buscáis?",
+      a: "Profesionales con una trayectoria consolidada (mínimo 15 años), con hambre de actualización tecnológica (IA) y, sobre todo, con buena actitud. El 'fit' cultural y las ganas de pasarlo bien son tan importantes como el CV."
+    },
+    {
+      q: "¿Qué tipo de negocio vamos a montar?",
+      a: "La sociedad nace con el foco abierto, aunque con predilección por sectores dinámicos como los eventos, el ocio o modelos escalables por tecnología. El objetivo es que sea un negocio 'fácil' de gestionar por un grupo de expertos."
+    },
+    {
+      q: "¿Hay que invertir dinero?",
+      a: "Sí. Para que el proyecto tenga solidez y compromiso (skin in the game), cada socio aportará una cantidad inicial para la constitución de la sociedad y los primeros prototipos. Todos somos dueños a partes iguales."
+    },
+    {
+      q: "¿En qué consisten las reuniones en Madrid?",
+      a: "Cada 2 o 3 meses nos reunimos físicamente en Madrid. Son jornadas de alta intensidad: validamos hitos del negocio, recibimos formación exclusiva en IA y cerramos con un evento social/fiesta para fortalecer el vínculo."
+    }
+  ];
+
+  const toggleFaq = (index) => {
+    setActiveFaq(activeFaq === index ? null : index);
+  };
+
+  return (
+    <div className="min-h-screen bg-[#0a0a0a] text-gray-100 font-sans selection:bg-amber-500/30">
+      {/* Navigation */}
+      <nav className="fixed w-full z-50 bg-[#0a0a0a]/80 backdrop-blur-md border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 bg-gradient-to-tr from-amber-500 to-amber-200 rounded-lg flex items-center justify-center text-black font-black text-xl">
+              10
+            </div>
+            <span className="text-xl font-bold tracking-tighter uppercase italic">The Society</span>
+          </div>
+          <div className="hidden md:flex gap-8 text-sm font-medium text-gray-400 uppercase tracking-widest">
+            <a href="#manifesto" className="hover:text-amber-400 transition-colors">Manifiesto</a>
+            <a href="#rituals" className="hover:text-amber-400 transition-colors">El Ritual</a>
+            <a href="#faq" className="hover:text-amber-400 transition-colors">Q&A</a>
+          </div>
+          <button className="bg-white text-black px-6 py-2 rounded-full font-bold text-sm hover:bg-amber-400 transition-all uppercase tracking-tighter">
+            Solicitar Acceso
+          </button>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="relative pt-40 pb-20 px-6">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-amber-500/5 blur-[120px] rounded-full" />
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          <div className="inline-block px-4 py-1.5 mb-6 border border-amber-500/30 rounded-full bg-amber-500/5">
+            <span className="text-amber-400 text-xs font-bold uppercase tracking-[0.2em]">Exclusivo: 15-20 Años de Experiencia</span>
+          </div>
+          <h1 className="text-5xl md:text-8xl font-black mb-8 leading-[0.9] tracking-tighter">
+            ALTA VETERANÍA.<br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600">INNOVACIÓN RADICAL.</span><br />
+            OCIO INTELIGENTE.
+          </h1>
+          <p className="text-xl md:text-2xl text-gray-400 max-w-2xl mx-auto mb-12 font-light leading-relaxed">
+            Invierte el <span className="text-white font-medium">10% de tu tiempo</span> en construir el negocio que siempre quisiste, rodeado de iguales.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button className="bg-amber-500 hover:bg-amber-400 text-black px-10 py-5 rounded-2xl font-black text-lg transition-all transform hover:scale-105 flex items-center justify-center gap-2">
+              UNIRSE AL CLUB <ArrowRight size={20} />
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Manifesto */}
+      <section id="manifesto" className="py-24 px-6 border-t border-white/5">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+            <div>
+              <h2 className="text-4xl font-bold mb-8">El Manifiesto</h2>
+              <div className="space-y-6 text-gray-400 text-lg leading-relaxed">
+                <p>
+                  Has dedicado 20 años a construir el éxito de otros o a consolidar el tuyo propio. Conoces las reglas del juego, pero buscas algo más: <span className="text-white">aprender lo que viene (IA), aplicar lo que sabes (Gestión) y disfrutar del proceso.</span>
+                </p>
+                <p>
+                  En <strong>The 10% Society</strong> no buscamos empleados ni consultores. Buscamos socios fundadores. Un colectivo senior diseñando una empresa participada a partes iguales, gestionada con inteligencia y escalada con tecnología.
+                </p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-white/5 p-8 rounded-3xl border border-white/10 hover:border-amber-500/50 transition-colors group">
+                <Clock className="mb-4 text-amber-500 group-hover:scale-110 transition-transform" size={32} />
+                <h3 className="text-xl font-bold mb-2">10% Tiempo</h3>
+                <p className="text-sm text-gray-500">4-8 horas semanales. Valor concentrado, no horas de silla.</p>
+              </div>
+              <div className="bg-white/5 p-8 rounded-3xl border border-white/10 hover:border-amber-500/50 transition-colors group">
+                <Cpu className="mb-4 text-amber-500 group-hover:scale-110 transition-transform" size={32} />
+                <h3 className="text-xl font-bold mb-2">Foco IA</h3>
+                <p className="text-sm text-gray-500">No solo teoría. Implementación real en nuestro propio negocio.</p>
+              </div>
+              <div className="bg-white/5 p-8 rounded-3xl border border-white/10 hover:border-amber-500/50 transition-colors group">
+                <Users className="mb-4 text-amber-500 group-hover:scale-110 transition-transform" size={32} />
+                <h3 className="text-xl font-bold mb-2">Socio A</h3>
+                <p className="text-sm text-gray-500">Participación equitativa desde el primer día.</p>
+              </div>
+              <div className="bg-white/5 p-8 rounded-3xl border border-white/10 hover:border-amber-500/50 transition-colors group">
+                <GlassWater className="mb-4 text-amber-500 group-hover:scale-110 transition-transform" size={32} />
+                <h3 className="text-xl font-bold mb-2">Leisure</h3>
+                <p className="text-sm text-gray-500">Negocios vinculados al mundo de los eventos y la fiesta.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* The Ritual */}
+      <section id="rituals" className="py-24 px-6 bg-[#0f0f0f] relative overflow-hidden">
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">El Ritual Madrid</h2>
+            <p className="text-gray-400 text-lg">Donde la estrategia se encuentra con la celebración.</p>
+          </div>
+          <div className="flex flex-col md:flex-row gap-8">
+            <div className="flex-1 bg-[#1a1a1a] p-10 rounded-[3rem] border border-white/5">
+              <div className="w-12 h-12 bg-amber-500/10 rounded-full flex items-center justify-center text-amber-500 mb-6 font-bold">01</div>
+              <h3 className="text-2xl font-bold mb-4">Board Session</h3>
+              <p className="text-gray-400 mb-6">Mañanas de trabajo intensivo en Madrid. Validación de hitos, análisis de métricas y formación en IA aplicada por expertos externos o socios.</p>
+              <ul className="space-y-3">
+                <li className="flex items-center gap-3 text-sm text-gray-300"><TrendingUp size={16} className="text-amber-500" /> Planificación estratégica Q+1</li>
+                <li className="flex items-center gap-3 text-sm text-gray-300"><Cpu size={16} className="text-amber-500" /> Labs de Automatización IA</li>
+              </ul>
+            </div>
+            <div className="flex-1 bg-gradient-to-br from-amber-500 to-amber-700 p-10 rounded-[3rem] text-black">
+              <div className="w-12 h-12 bg-black/10 rounded-full flex items-center justify-center text-black mb-6 font-bold">02</div>
+              <h3 className="text-2xl font-bold mb-4">The After Party</h3>
+              <p className="text-black/80 mb-6">Porque los mejores acuerdos se cierran con una copa. Organización de eventos exclusivos para socios donde celebramos los éxitos del trimestre.</p>
+              <ul className="space-y-3 font-medium">
+                <li className="flex items-center gap-3 text-sm"><GlassWater size={16} /> Networking de alto nivel</li>
+                <li className="flex items-center gap-3 text-sm"><Calendar size={16} /> Experiencias gastronómicas y ocio</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Q&A Section */}
+      <section id="faq" className="py-24 px-6">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="text-4xl font-bold mb-12 text-center">Despejando Dudas</h2>
+          <div className="space-y-4">
+            {faqs.map((faq, index) => (
+              <div key={index} className="bg-white/5 rounded-2xl border border-white/10 overflow-hidden">
+                <button 
+                  onClick={() => toggleFaq(index)}
+                  className="w-full px-8 py-6 text-left flex justify-between items-center hover:bg-white/5 transition-colors"
+                >
+                  <span className="font-bold text-lg">{faq.q}</span>
+                  {activeFaq === index ? <ChevronUp className="text-amber-500" /> : <ChevronDown />}
+                </button>
+                {activeFaq === index && (
+                  <div className="px-8 pb-6 text-gray-400 leading-relaxed">
+                    {faq.a}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-24 px-6">
+        <div className="max-w-5xl mx-auto bg-gradient-to-tr from-white/5 to-white/10 rounded-[4rem] p-12 md:p-20 text-center border border-white/10 relative overflow-hidden">
+          <div className="absolute inset-0 bg-amber-500/5 opacity-50 blur-3xl -z-10" />
+          <h2 className="text-4xl md:text-6xl font-bold mb-8 italic">¿Eres el 10%?</h2>
+          <p className="text-gray-400 text-xl mb-12 max-w-xl mx-auto">
+            Estamos seleccionando a los primeros 10 socios fundadores para la Fase 1. El proceso de admisión es por invitación y entrevista personal.
+          </p>
+          <form className="max-w-md mx-auto space-y-4">
+            <input 
+              type="text" 
+              placeholder="Nombre Completo" 
+              className="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-amber-500 transition-colors"
+            />
+            <input 
+              type="email" 
+              placeholder="Email Profesional" 
+              className="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-amber-500 transition-colors"
+            />
+            <button className="w-full bg-white text-black font-black py-5 rounded-2xl hover:bg-amber-400 transition-all flex items-center justify-center gap-2">
+              SOLICITAR ENTREVISTA <ArrowRight size={20} />
+            </button>
+          </form>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-12 px-6 border-t border-white/5">
+        <div className="max-w-7xl mx-auto flex flex-col md:row justify-between items-center gap-8">
+          <div className="flex items-center gap-2 opacity-50">
+            <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center text-black font-black text-sm">
+              10
+            </div>
+            <span className="text-sm font-bold uppercase tracking-widest italic">The Society</span>
+          </div>
+          <div className="text-gray-600 text-xs text-center">
+            © 2024 The 10% Society. Madrid, España. Solo para mentes inquietas.
+          </div>
+          <div className="flex gap-6 text-gray-500">
+            <ShieldCheck size={20} />
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default App;
