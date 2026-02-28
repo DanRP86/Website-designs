@@ -8,10 +8,10 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
         .faq-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
-        .faq-active .faq-content { max-height: 200px; }
-        .faq-active .chevron { transform: rotate(180deg); }
+        .faq-active .faq-content { max-height: 300px; padding-bottom: 1.5rem; }
+        .faq-active .chevron { transform: rotate(180deg); color: #f59e0b; }
     </style>
 </head>
 <body class="bg-[#0a0a0a] text-gray-100 selection:bg-amber-500/30">
@@ -19,10 +19,13 @@
     <nav class="fixed w-full z-50 bg-[#0a0a0a]/80 backdrop-blur-md border-b border-white/10">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
             <div class="flex items-center gap-2 group cursor-pointer">
-                <span class="text-lg font-bold tracking-tighter uppercase italic text-gray-400">The</span>
-                <div class="bg-gradient-to-tr from-amber-500 to-amber-200 px-2 py-1 rounded-md flex items-center justify-center text-black font-black text-xl">10%</div>
+                <span class="text-lg font-bold tracking-tighter uppercase italic text-gray-400 group-hover:text-white transition-colors">The</span>
+                <div class="bg-gradient-to-tr from-amber-500 to-amber-200 px-2 py-1 rounded-md flex items-center justify-center text-black font-black text-xl leading-none">
+                    10%
+                </div>
                 <span class="text-lg font-bold tracking-tighter uppercase italic group-hover:text-amber-400 transition-colors">Society</span>
             </div>
+            
             <div class="hidden md:flex gap-8 text-sm font-medium text-gray-400 uppercase tracking-widest">
                 <a href="#manifesto" class="hover:text-amber-400 transition-colors">Manifiesto</a>
                 <a href="#rituals" class="hover:text-amber-400 transition-colors">El Ritual</a>
@@ -41,15 +44,15 @@
                 <span class="text-amber-400 text-xs font-bold uppercase tracking-[0.2em]">Exclusivo: 15-20 Años de Experiencia</span>
             </div>
             <h1 class="text-5xl md:text-8xl font-black mb-8 leading-[0.9] tracking-tighter">
-                ALTA VETERANÍA.<br>
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600">INNOVACIÓN RADICAL.</span><br>
+                ALTA VETERANÍA.<br />
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600">INNOVACIÓN RADICAL.</span><br />
                 OCIO INTELIGENTE.
             </h1>
-            <p class="text-xl md:text-2xl text-gray-400 max-w-2xl mx-auto mb-12 font-light">
-                Invierte el <span class="text-white font-medium">10% de tu tiempo</span> en construir el negocio que siempre quisiste.
+            <p class="text-xl md:text-2xl text-gray-400 max-w-2xl mx-auto mb-12 font-light leading-relaxed">
+                Invierte el <span class="text-white font-medium">10% de tu tiempo</span> en construir el negocio que siempre quisiste, rodeado de iguales.
             </p>
-            <div class="flex justify-center">
-                <button class="bg-amber-500 hover:bg-amber-400 text-black px-10 py-5 rounded-2xl font-black text-lg transition-all transform hover:scale-105 flex items-center gap-2">
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button class="bg-amber-500 hover:bg-amber-400 text-black px-10 py-5 rounded-2xl font-black text-lg transition-all transform hover:scale-105 flex items-center justify-center gap-2">
                     UNIRSE AL CLUB <i data-lucide="arrow-right"></i>
                 </button>
             </div>
@@ -57,75 +60,172 @@
     </section>
 
     <section id="manifesto" class="py-24 px-6 border-t border-white/5">
-        <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
-            <div>
-                <h2 class="text-4xl font-bold mb-8">El Manifiesto</h2>
-                <div class="space-y-6 text-gray-400 text-lg">
-                    <p>Has dedicado 20 años a construir el éxito de otros. Conoces las reglas, pero buscas algo más: <span class="text-white">aprender IA, aplicar gestión y disfrutar.</span></p>
-                    <p>En <strong>The 10% Society</strong> buscamos socios fundadores. Un colectivo senior diseñando una empresa participada a partes iguales.</p>
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h2 class="text-4xl font-bold mb-8">El Manifiesto</h2>
+                    <div class="space-y-6 text-gray-400 text-lg leading-relaxed">
+                        <p>
+                            Has dedicado 20 años a construir el éxito de otros o a consolidar el tuyo propio. Conoces las reglas del juego, pero buscas algo más: <span class="text-white">aprender lo que viene (IA), aplicar lo que sabes (Gestión) y disfrutar del proceso.</span>
+                        </p>
+                        <p>
+                            En <strong>The 10% Society</strong> no buscamos empleados ni consultores. Buscamos socios fundadores. Un colectivo senior diseñando una empresa participada a partes iguales, gestionada con inteligencia y escalada con tecnología.
+                        </p>
+                    </div>
                 </div>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-                <div class="bg-white/5 p-8 rounded-3xl border border-white/10">
-                    <i data-lucide="clock" class="text-amber-500 mb-4"></i>
-                    <h3 class="font-bold">10% Tiempo</h3>
-                    <p class="text-xs text-gray-500">4-8 horas semanales.</p>
-                </div>
-                <div class="bg-white/5 p-8 rounded-3xl border border-white/10">
-                    <i data-lucide="cpu" class="text-amber-500 mb-4"></i>
-                    <h3 class="font-bold">Foco IA</h3>
-                    <p class="text-xs text-gray-500">Implementación real.</p>
-                </div>
-                <div class="bg-white/5 p-8 rounded-3xl border border-white/10">
-                    <i data-lucide="users" class="text-amber-500 mb-4"></i>
-                    <h3 class="font-bold">Socio A</h3>
-                    <p class="text-xs text-gray-500">Participación equitativa.</p>
-                </div>
-                <div class="bg-white/5 p-8 rounded-3xl border border-white/10">
-                    <i data-lucide="glass-water" class="text-amber-500 mb-4"></i>
-                    <h3 class="font-bold">Leisure</h3>
-                    <p class="text-xs text-gray-500">Eventos y ocio.</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-white/5 p-8 rounded-3xl border border-white/10 hover:border-amber-500/50 transition-colors group text-center">
+                        <i data-lucide="clock" class="mx-auto mb-4 text-amber-500 group-hover:scale-110 transition-transform"></i>
+                        <h3 class="text-xl font-bold mb-2">10% Tiempo</h3>
+                        <p class="text-sm text-gray-500">4-8 horas semanales. Valor concentrado.</p>
+                    </div>
+                    <div class="bg-white/5 p-8 rounded-3xl border border-white/10 hover:border-amber-500/50 transition-colors group text-center">
+                        <i data-lucide="cpu" class="mx-auto mb-4 text-amber-500 group-hover:scale-110 transition-transform"></i>
+                        <h3 class="text-xl font-bold mb-2">Foco IA</h3>
+                        <p class="text-sm text-gray-500">Implementación real en nuestro propio negocio.</p>
+                    </div>
+                    <div class="bg-white/5 p-8 rounded-3xl border border-white/10 hover:border-amber-500/50 transition-colors group text-center">
+                        <i data-lucide="users" class="mx-auto mb-4 text-amber-500 group-hover:scale-110 transition-transform"></i>
+                        <h3 class="text-xl font-bold mb-2">Socio A</h3>
+                        <p class="text-sm text-gray-500">Participación equitativa desde el primer día.</p>
+                    </div>
+                    <div class="bg-white/5 p-8 rounded-3xl border border-white/10 hover:border-amber-500/50 transition-colors group text-center">
+                        <i data-lucide="glass-water" class="mx-auto mb-4 text-amber-500 group-hover:scale-110 transition-transform"></i>
+                        <h3 class="text-xl font-bold mb-2">Leisure</h3>
+                        <p class="text-sm text-gray-500">Negocios vinculados al mundo de los eventos.</p>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="faq" class="py-24 px-6 bg-[#0f0f0f]">
+    <section id="rituals" class="py-24 px-6 bg-[#0f0f0f] relative overflow-hidden">
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">El Ritual Madrid</h2>
+                <p class="text-gray-400 text-lg">Donde la estrategia se encuentra con la celebración.</p>
+            </div>
+            <div class="flex flex-col md:flex-row gap-8">
+                <div class="flex-1 bg-[#1a1a1a] p-10 rounded-[3rem] border border-white/5">
+                    <div class="w-12 h-12 bg-amber-500/10 rounded-full flex items-center justify-center text-amber-500 mb-6 font-bold">01</div>
+                    <h3 class="text-2xl font-bold mb-4">Board Session</h3>
+                    <p class="text-gray-400 mb-6">Mañanas de trabajo intensivo en Madrid. Validación de hitos, análisis de métricas y formación en IA aplicada por expertos externos o socios.</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3 text-sm text-gray-300"><i data-lucide="trending-up" class="text-amber-500 w-4 h-4"></i> Planificación estratégica Q+1</li>
+                        <li class="flex items-center gap-3 text-sm text-gray-300"><i data-lucide="cpu" class="text-amber-500 w-4 h-4"></i> Labs de Automatización IA</li>
+                    </ul>
+                </div>
+                <div class="flex-1 bg-gradient-to-br from-amber-500 to-amber-700 p-10 rounded-[3rem] text-black">
+                    <div class="w-12 h-12 bg-black/10 rounded-full flex items-center justify-center text-black mb-6 font-bold">02</div>
+                    <h3 class="text-2xl font-bold mb-4">The After Party</h3>
+                    <p class="text-black/80 mb-6">Porque los mejores acuerdos se cierran con una copa. Organización de eventos exclusivos para socios donde celebramos los éxitos del trimestre.</p>
+                    <ul class="space-y-3 font-medium">
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="glass-water" class="w-4 h-4"></i> Networking de alto nivel</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="calendar" class="w-4 h-4"></i> Experiencias gastronómicas y ocio</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="faq" class="py-24 px-6">
         <div class="max-w-3xl mx-auto">
             <h2 class="text-4xl font-bold mb-12 text-center">Despejando Dudas</h2>
             <div class="space-y-4">
-                <div class="faq-item bg-white/5 rounded-2xl border border-white/10" onclick="toggleFaq(this)">
-                    <button class="w-full px-8 py-6 text-left flex justify-between items-center">
+                <div class="faq-item bg-white/5 rounded-2xl border border-white/10 overflow-hidden" onclick="toggleFaq(this)">
+                    <button class="w-full px-8 py-6 text-left flex justify-between items-center hover:bg-white/5 transition-colors">
                         <span class="font-bold text-lg">¿Por qué el 10%?</span>
                         <i data-lucide="chevron-down" class="chevron transition-transform"></i>
                     </button>
-                    <div class="faq-content px-8 pb-6 text-gray-400">
-                        Porque creemos que un profesional senior aporta más en 4 horas que un junior en 40. Es el equilibrio perfecto.
+                    <div class="faq-content px-8 text-gray-400 leading-relaxed">
+                        Porque creemos que un profesional con 15-20 años de experiencia puede aportar más valor en 4 horas a la semana que un perfil junior en 40. Es el porcentaje de tiempo ideal para mantener tus proyectos activos mientras construyes tu próximo gran activo.
                     </div>
                 </div>
-                <div class="faq-item bg-white/5 rounded-2xl border border-white/10" onclick="toggleFaq(this)">
-                    <button class="w-full px-8 py-6 text-left flex justify-between items-center">
+                <div class="faq-item bg-white/5 rounded-2xl border border-white/10 overflow-hidden" onclick="toggleFaq(this)">
+                    <button class="w-full px-8 py-6 text-left flex justify-between items-center hover:bg-white/5 transition-colors">
+                        <span class="font-bold text-lg">¿Qué perfil de socios buscáis?</span>
+                        <i data-lucide="chevron-down" class="chevron transition-transform"></i>
+                    </button>
+                    <div class="faq-content px-8 text-gray-400 leading-relaxed">
+                        Profesionales con una trayectoria consolidada (mínimo 15 años), con hambre de actualización tecnológica (IA) y, sobre todo, con buena actitud. El 'fit' cultural y las ganas de pasarlo bien son tan importantes como el CV.
+                    </div>
+                </div>
+                <div class="faq-item bg-white/5 rounded-2xl border border-white/10 overflow-hidden" onclick="toggleFaq(this)">
+                    <button class="w-full px-8 py-6 text-left flex justify-between items-center hover:bg-white/5 transition-colors">
+                        <span class="font-bold text-lg">¿Qué tipo de negocio vamos a montar?</span>
+                        <i data-lucide="chevron-down" class="chevron transition-transform"></i>
+                    </button>
+                    <div class="faq-content px-8 text-gray-400 leading-relaxed">
+                        La sociedad nace con el foco abierto, aunque con predilección por sectores dinámicos como los eventos, el ocio o modelos escalables por tecnología. El objetivo es que sea un negocio 'fácil' de gestionar por un grupo de expertos.
+                    </div>
+                </div>
+                <div class="faq-item bg-white/5 rounded-2xl border border-white/10 overflow-hidden" onclick="toggleFaq(this)">
+                    <button class="w-full px-8 py-6 text-left flex justify-between items-center hover:bg-white/5 transition-colors">
                         <span class="font-bold text-lg">¿Hay que invertir dinero?</span>
                         <i data-lucide="chevron-down" class="chevron transition-transform"></i>
                     </button>
-                    <div class="faq-content px-8 pb-6 text-gray-400">
-                        Sí. Para asegurar compromiso real (skin in the game), cada socio aporta una cantidad inicial para constitución y prototipos.
+                    <div class="faq-content px-8 text-gray-400 leading-relaxed">
+                        Sí. Para que el proyecto tenga solidez y compromiso (skin in the game), cada socio aportará una cantidad inicial para la constitución de la sociedad y los primeros prototipos. Todos somos dueños a partes iguales.
+                    </div>
+                </div>
+                <div class="faq-item bg-white/5 rounded-2xl border border-white/10 overflow-hidden" onclick="toggleFaq(this)">
+                    <button class="w-full px-8 py-6 text-left flex justify-between items-center hover:bg-white/5 transition-colors">
+                        <span class="font-bold text-lg">¿En qué consisten las reuniones en Madrid?</span>
+                        <i data-lucide="chevron-down" class="chevron transition-transform"></i>
+                    </button>
+                    <div class="faq-content px-8 text-gray-400 leading-relaxed">
+                        Cada 2 o 3 meses nos reunimos físicamente en Madrid. Son jornadas de alta intensidad: validamos hitos del negocio, recibimos formación exclusiva en IA y cerramos con un evento social/fiesta para fortalecer el vínculo.
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <footer class="py-12 text-center border-t border-white/5 text-gray-600 text-sm">
-        © 2026 The 10% Society. Madrid, España.
+    <section class="py-24 px-6">
+        <div class="max-w-5xl mx-auto bg-gradient-to-tr from-white/5 to-white/10 rounded-[4rem] p-12 md:p-20 text-center border border-white/10 relative overflow-hidden">
+            <div class="absolute inset-0 bg-amber-500/5 opacity-50 blur-3xl -z-10"></div>
+            <h2 class="text-4xl md:text-6xl font-bold mb-8 italic">¿Eres el 10%?</h2>
+            <p class="text-gray-400 text-xl mb-12 max-w-xl mx-auto">
+                Estamos seleccionando a los primeros 10 socios fundadores para la Fase 1. El proceso de admisión es por invitación y entrevista personal.
+            </p>
+            <form class="max-w-md mx-auto space-y-4" onsubmit="event.preventDefault(); alert('Prueba de formulario enviada');">
+                <input type="text" placeholder="Nombre Completo" class="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-amber-500 transition-colors">
+                <input type="email" placeholder="Email Profesional" class="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-amber-500 transition-colors">
+                <button class="w-full bg-white text-black font-black py-5 rounded-2xl hover:bg-amber-400 transition-all flex items-center justify-center gap-2">
+                    SOLICITAR ENTREVISTA <i data-lucide="arrow-right"></i>
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <footer class="py-12 px-6 border-t border-white/5">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="flex items-center gap-2 opacity-80">
+                <span class="text-sm font-bold tracking-tighter uppercase italic text-gray-500">The</span>
+                <div class="w-8 h-8 bg-white rounded flex items-center justify-center text-black font-black text-xs">10%</div>
+                <span class="text-sm font-bold tracking-tighter uppercase italic">Society</span>
+            </div>
+            <div class="text-gray-600 text-xs text-center">
+                © 2024 The 10% Society. Madrid, España. Solo para mentes inquietas.
+            </div>
+            <div class="flex gap-6 text-gray-500">
+                <i data-lucide="shield-check"></i>
+            </div>
+        </div>
     </footer>
 
     <script>
-        // Inicializar Iconos
+        // Inicializar iconos de Lucide
         lucide.createIcons();
 
-        // Lógica de FAQ
+        // Lógica para abrir/cerrar FAQs
         function toggleFaq(element) {
+            // Cerrar otros si estuvieran abiertos (opcional)
+            const items = document.querySelectorAll('.faq-item');
+            items.forEach(item => {
+                if (item !== element) item.classList.remove('faq-active');
+            });
+            // Abrir el actual
             element.classList.toggle('faq-active');
         }
     </script>
